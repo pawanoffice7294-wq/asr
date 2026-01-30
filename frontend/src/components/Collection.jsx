@@ -22,13 +22,13 @@ const Collection = ({ onCustomize, onAddToCart }) => {
     };
 
     const products = [
-        { id: 1, name: 'Premium Tee', price: '₹299 - ₹699', image: '/src/assets/products/white_tshirt_asr_1769234711724.png', category: 'T-Shirt' },
-        { id: 2, name: 'Hoodie Pro', price: '₹899 - ₹1599', image: '/src/assets/products/hoodie_asr_white_1769235205914.png', category: 'Hoodie' },
-        { id: 3, name: 'Eco Bag', price: '₹149 - ₹399', image: '/src/assets/products/ecobag_asr_white_1769235236150.png', category: 'Bag' },
-        { id: 4, name: 'Snapback', price: '₹199 - ₹499', image: '/src/assets/products/snapback_asr_white_1769235221302.png', category: 'Hat' },
-        { id: 5, name: 'Classic Cup', price: '₹199 - ₹499', image: '/src/assets/products/white_mug_asr_1769234726825.png', category: 'Cup' },
-        { id: 6, name: 'Travel Mug', price: '₹249 - ₹599', image: '/src/assets/products/white_mug_asr_1769234726825.png', category: 'Mug' },
-        { id: 7, name: 'Soft Pillow', price: '₹349 - ₹799', image: '/src/assets/products/white_pillow_asr_1769234741512.png', category: 'Pillow' },
+        { id: 1, name: 'Premium Tee', price: '₹299 - ₹699', image: '/products/white_tshirt_asr_1769234711724.png', category: 'T-Shirt' },
+        { id: 2, name: 'Hoodie Pro', price: '₹899 - ₹1599', image: '/products/hoodie_asr_white_1769235205914.png', category: 'Hoodie' },
+        { id: 3, name: 'Eco Bag', price: '₹149 - ₹399', image: '/products/ecobag_asr_white_1769235236150.png', category: 'Bag' },
+        { id: 4, name: 'Snapback', price: '₹199 - ₹499', image: '/products/snapback_asr_white_1769235221302.png', category: 'Hat' },
+        { id: 5, name: 'Classic Cup', price: '₹199 - ₹499', image: '/products/white_mug_asr_1769234726825.png', category: 'Cup' },
+        { id: 6, name: 'Travel Mug', price: '₹249 - ₹599', image: '/products/white_mug_asr_1769234726825.png', category: 'Mug' },
+        { id: 7, name: 'Soft Pillow', price: '₹349 - ₹799', image: '/products/white_pillow_asr_1769234741512.png', category: 'Pillow' },
     ];
 
     return (
