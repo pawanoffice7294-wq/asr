@@ -3,13 +3,17 @@ import { Palette, Type, Upload, Save, Share2, ShoppingBag, Plus } from 'lucide-r
 import QRCode from 'react-qr-code';
 import confetti from 'canvas-confetti';
 
-const Customizer = ({ onAddToCart, initialProduct = { category: 'T-Shirt', name: 'Premium Tee', image: '👕' } }) => {
-    const [product, setProduct] = useState(initialProduct);
+const Customizer = ({ onAddToCart, initialProduct }) => {
+    // Fallback if initialProduct is null (e.g., from Navbar)
+    const defaultProduct = { id: 1, category: 'T-Shirt', name: 'Premium Tee', image: '/products/white_tshirt_asr_1769234711724.png' };
+    const [product, setProduct] = useState(initialProduct || defaultProduct);
     const [color, setColor] = useState('#6366f1');
     const [text, setText] = useState('YOUR TEXT');
     const [textColor, setTextColor] = useState('#ffffff');
     const [showQR, setShowQR] = useState(false);
     const [designId, setDesignId] = useState('');
+
+    const siteUrl = window.location.origin;
 
     const shapes = {
         'T-Shirt': 'path("M 100,0 L 300,0 L 300,100 L 400,150 L 350,250 L 300,220 L 300,400 L 100,400 L 100,220 L 50,250 L 0,150 L 100,100 Z")',
@@ -84,7 +88,7 @@ const Customizer = ({ onAddToCart, initialProduct = { category: 'T-Shirt', name:
                 {showQR && (
                     <div className="glass" style={{ position: 'absolute', top: '2rem', right: '2rem', padding: '1rem', borderRadius: '16px', textAlign: 'center', animation: 'fadeIn 0.5s ease' }}>
                         <p style={{ fontSize: '0.8rem', marginBottom: '0.5rem', opacity: 0.7 }}>SCAN TO VIEW</p>
-                        <QRCode value={`https://asr-enterprises.app/design/${designId}`} size={128} bgColor="transparent" fgColor="#ffffff" />
+                        <QRCode value={`${siteUrl}?design=${designId}`} size={128} bgColor="transparent" fgColor="#ffffff" />
                     </div>
                 )}
             </div>
