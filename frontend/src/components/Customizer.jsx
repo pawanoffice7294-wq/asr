@@ -15,8 +15,8 @@ const Customizer = ({ onAddToCart, initialProduct }) => {
     const [activeLayer, setActiveLayer] = useState('text'); // 'text' or 'image'
 
     // Drag and Drop State
-    const [textPos, setTextPos] = useState({ x: 50, y: 40 }); // Percentage
-    const [imagePos, setImagePos] = useState({ x: 50, y: 50 }); // Percentage
+    const [textPos, setTextPos] = useState({ x: 50, y: 50 }); // Set to true center by default
+    const [imagePos, setImagePos] = useState({ x: 50, y: 50 });
     const [isDragging, setIsDragging] = useState(false);
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
@@ -123,25 +123,39 @@ const Customizer = ({ onAddToCart, initialProduct }) => {
                 <button
                     className="glass"
                     onClick={() => window.history.back()}
-                    style={{ position: 'absolute', top: '2rem', left: '2rem', padding: '0.8rem 1.5rem', borderRadius: '50px', zIndex: 10, display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', fontWeight: 'bold' }}
+                    style={{
+                        position: 'absolute',
+                        top: '1.5rem',
+                        left: '1.5rem',
+                        padding: '0.6rem 1.2rem',
+                        borderRadius: '12px',
+                        zIndex: 100,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        fontSize: '0.8rem',
+                        fontWeight: '700',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+                    }}
                 >
-                    <ArrowRight size={18} style={{ transform: 'rotate(180deg)' }} /> Back to Shop
+                    <ArrowRight size={16} style={{ transform: 'rotate(180deg)' }} /> Back
                 </button>
 
                 <div
                     className="product-canvas"
                     style={{
-                        width: '450px',
-                        height: '450px',
+                        width: 'min(450px, 80vw)',
+                        height: 'min(450px, 80vw)',
                         backgroundColor: color,
                         clipPath: shapes[product.category] || shapes['T-Shirt'],
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         transition: isDragging ? 'none' : 'background-color 0.6s cubic-bezier(0.23, 1, 0.32, 1)',
-                        boxShadow: '0 50px 100px rgba(0,0,0,0.5), inset 0 0 80px rgba(0,0,0,0.3)',
-                        transform: `perspective(1000px) rotateY(${product.category === 'Mug' ? '-10deg' : '-5deg'}) scale(${product.category === 'Mug' ? '1.1' : '1'})`,
-                        position: 'relative'
+                        boxShadow: '0 30px 60px rgba(0,0,0,0.4), inset 0 0 40px rgba(0,0,0,0.2)',
+                        transform: `perspective(1000px) rotateY(${product.category === 'Mug' ? '-10deg' : '-5deg'})`,
+                        position: 'relative',
+                        marginTop: '2rem' // Give space for the back button on smaller screens
                     }}
                 >
                     {/* Text Overlay */}
