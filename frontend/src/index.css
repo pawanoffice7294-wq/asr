@@ -101,31 +101,84 @@ button {
   background: var(--primary);
 }
 
-@keyframes fadeIn {
+/* Studio Mode Styles */
+.customizer-studio {
+  animation: studioFadeIn 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@keyframes studioFadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    background: #000;
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    background: #0a0a0c;
   }
 }
 
-@keyframes scaleIn {
+@keyframes slideRight {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: translateX(-30px);
   }
 
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: translateX(0);
   }
 }
 
-/* Mobile Utilities */
+/* Custom Scrollbar for Studio Panel */
+.customizer-studio aside::-webkit-scrollbar {
+  width: 4px;
+}
+
+.customizer-studio aside::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.customizer-studio aside::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+/* Studio Range Input Refinement */
+input[type="range"] {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--primary);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--primary-glow);
+  border: 2px solid #fff;
+}
+
+/* Mobile Studio Overrides */
+@media (max-width: 1024px) {
+  .customizer-studio>div {
+    flex-direction: column !important;
+    overflow-y: auto !important;
+  }
+
+  .customizer-studio aside {
+    width: 100% !important;
+    border-left: none !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+    min-height: 100vh;
+  }
+}
+
+/* Instagram Styles (Restored) */
 .mobile-only {
   display: none !important;
 }
@@ -143,31 +196,15 @@ button {
     grid-template-columns: 1fr !important;
     gap: 2rem !important;
     padding: 1.5rem !important;
-    background: transparent;
   }
 
   .card-insta {
     border-radius: var(--radius-lg) !important;
     padding: 1rem !important;
-    aspect-ratio: auto !important;
     min-height: 450px;
-  }
-
-  /* Customizer Mobile Stack */
-  .customizer-layout {
-    grid-template-columns: 1fr !important;
-  }
-
-  .preview-area {
-    min-height: 400px !important;
-  }
-
-  .controls-area {
-    padding: 1.5rem !important;
   }
 }
 
-/* Category Stories */
 .stories-container {
   display: flex;
   gap: 1.5rem;
@@ -227,7 +264,6 @@ button {
   opacity: 0.8;
 }
 
-/* Premium Grid Adjustment */
 .lifestyle-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));

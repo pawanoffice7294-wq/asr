@@ -111,291 +111,421 @@ const Customizer = ({ onAddToCart, initialProduct }) => {
     };
 
     return (
-        <div className="customizer-layout" style={{
-            padding: '1rem 2rem 5rem',
-            maxWidth: '100vw',
-            margin: '0 auto',
+        <div className="customizer-studio" style={{
             minHeight: '100vh',
+            background: '#0a0a0c',
+            color: '#fff',
             display: 'flex',
             flexDirection: 'column',
-            background: 'var(--background)'
+            overflow: 'hidden'
         }}>
-            {/* 1. Top Navigation: Absolutely isolated at the top left */}
-            <div style={{ position: 'absolute', top: '2rem', left: '2rem', zIndex: 1000 }}>
-                <button
-                    className="glass"
-                    onClick={() => window.history.back()}
-                    style={{
-                        padding: '0.8rem 1.5rem',
-                        borderRadius: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.6rem',
-                        fontSize: '0.9rem',
-                        fontWeight: '700',
-                        boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
-                    }}
-                >
-                    <ArrowRight size={18} style={{ transform: 'rotate(180deg)' }} /> Back to Shop
-                </button>
-            </div>
-
-            {/* 2. Main Studio - Using a balanced grid to keep the center Column perfectly centered on the page */}
-            <main style={{
-                display: 'grid',
-                gridTemplateColumns: 'minmax(420px, 1fr) minmax(auto, 600px) minmax(420px, 1fr)',
-                gap: '2rem',
-                flex: 1,
+            {/* 1. Studio Header */}
+            <nav style={{
+                height: '70px',
+                borderBottom: '1px solid rgba(255,255,255,0.05)',
+                display: 'flex',
                 alignItems: 'center',
-                paddingTop: '5rem'
+                justifyContent: 'space-between',
+                padding: '0 2rem',
+                background: 'rgba(10,10,12,0.8)',
+                backdropFilter: 'blur(20px)',
+                zIndex: 100
             }}>
-                {/* Left Spacer - Keeps the middle balanced */}
-                <div className="desktop-only"></div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                    <button
+                        onClick={() => window.history.back()}
+                        style={{
+                            background: 'transparent',
+                            border: 'none',
+                            color: 'rgba(255,255,255,0.5)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            fontSize: '0.9rem',
+                            fontWeight: '600',
+                            transition: 'color 0.3s'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.color = '#fff'}
+                        onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.5)'}
+                    >
+                        <ArrowRight size={18} style={{ transform: 'rotate(180deg)' }} /> Exit Studio
+                    </button>
+                    <div style={{ width: '1px', height: '24px', background: 'rgba(255,255,255,0.1)' }}></div>
+                    <span style={{ fontWeight: '700', letterSpacing: '1px', fontSize: '1rem', textTransform: 'uppercase' }}>
+                        {product.category} <span style={{ opacity: 0.4 }}>Configurator</span>
+                    </span>
+                </div>
 
-                {/* Center Column: The T-Shirt Container - ONLY T-SHIRT HERE */}
-                <div
-                    className="glass-card"
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                    <button onClick={handleSave} className="glass" style={{ padding: '0.6rem 1.2rem', borderRadius: '10px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <Share2 size={16} /> Share
+                    </button>
+                    <button
+                        onClick={handleAddToCart}
+                        style={{
+                            background: 'var(--primary)',
+                            color: '#fff',
+                            border: 'none',
+                            padding: '0.6rem 1.4rem',
+                            borderRadius: '10px',
+                            fontWeight: '700',
+                            fontSize: '0.85rem',
+                            cursor: 'pointer',
+                            boxShadow: '0 8px 20px var(--primary-glow)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem'
+                        }}
+                    >
+                        <ShoppingBag size={16} /> Add to Collection
+                    </button>
+                </div>
+            </nav>
+
+            {/* 2. Studio Workspace */}
+            <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+
+                {/* Product Stage (Left) */}
+                <main
                     style={{
+                        flex: 1,
+                        position: 'relative',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        background: 'radial-gradient(circle at 50% 50%, rgba(30, 41, 59, 0.5) 0%, rgba(2, 6, 23, 0.8) 100%)',
-                        overflow: 'hidden',
-                        cursor: isDragging ? 'grabbing' : 'auto',
-                        borderRadius: '40px',
-                        aspectRatio: '1/1',
-                        width: '100%',
-                        boxShadow: '0 30px 100px rgba(0,0,0,0.7)',
-                        border: '1px solid rgba(255,255,255,0.05)',
-                        position: 'relative'
+                        background: 'radial-gradient(circle at center, #1a1a20 0%, #0a0a0c 100%)',
+                        cursor: isDragging ? 'grabbing' : 'auto'
                     }}
                     onMouseMove={handleMouseMove}
                     onMouseUp={handleMouseUp}
                     onMouseLeave={handleMouseUp}
                 >
+                    {/* Shadow Pedestal */}
+                    <div style={{
+                        position: 'absolute',
+                        bottom: '15%',
+                        width: '400px',
+                        height: '40px',
+                        background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.5) 0%, transparent 70%)',
+                        filter: 'blur(10px)'
+                    }}></div>
+
+                    {/* Canvas Container */}
                     <div
-                        className="product-canvas"
+                        className="product-canvas-stage"
                         style={{
-                            width: '85%',
-                            height: '85%',
-                            backgroundColor: color,
-                            clipPath: shapes[product.category] || shapes['T-Shirt'],
+                            width: 'min(600px, 80%)',
+                            height: 'min(600px, 80%)',
+                            position: 'relative',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            transition: isDragging ? 'none' : 'background-color 0.6s cubic-bezier(0.23, 1, 0.32, 1)',
-                            boxShadow: '0 40px 80px rgba(0,0,0,0.6), inset 0 0 60px rgba(0,0,0,0.3)',
-                            transform: `perspective(1000px) rotateY(${product.category === 'Mug' ? '-10deg' : '-5deg'})`,
-                            position: 'relative'
+                            zIndex: 2
                         }}
                     >
-                        {/* Text Overlay */}
                         <div
-                            onMouseDown={(e) => handleMouseDown(e, 'text')}
-                            style={{
-                                position: 'absolute',
-                                left: `${textPos.x}%`,
-                                top: `${textPos.y}%`,
-                                transform: 'translate(-50%, -50%)',
-                                cursor: 'grab',
-                                userSelect: 'none',
-                                border: activeLayer === 'text' ? '1px dashed rgba(255,255,255,0.6)' : 'none',
-                                padding: '10px',
-                                zIndex: 5
-                            }}
-                        >
-                            <span style={{
-                                color: textColor,
-                                fontSize: '2.2rem',
-                                fontWeight: '900',
-                                textTransform: 'uppercase',
-                                textAlign: 'center',
-                                maxWidth: '280px',
-                                wordBreak: 'break-word',
-                                textShadow: '0 4px 12px rgba(0,0,0,0.5)',
-                                pointerEvents: 'none',
-                                letterSpacing: '1px'
-                            }}>
-                                {text}
-                            </span>
-                        </div>
-
-                        {/* Image Overlay */}
-                        {userImage && (
-                            <div
-                                onMouseDown={(e) => handleMouseDown(e, 'image')}
-                                style={{
-                                    position: 'absolute',
-                                    left: `${imagePos.x}%`,
-                                    top: `${imagePos.y}%`,
-                                    transform: `translate(-50%, -50%) scale(${imageScale})`,
-                                    cursor: 'grab',
-                                    userSelect: 'none',
-                                    border: activeLayer === 'image' ? '1px dashed rgba(255,255,255,0.6)' : 'none',
-                                    width: '180px',
-                                    height: '180px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    zIndex: 4
-                                }}
-                            >
-                                <img src={userImage} alt="userupload" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', pointerEvents: 'none' }} />
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                {/* Right Column: Studio Controls Side Panel */}
-                <aside className="glass-card" style={{
-                    padding: '2rem',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '1.5rem',
-                    maxHeight: '90vh',
-                    overflowY: 'auto',
-                    borderRadius: '32px',
-                    width: '400px'
-                }}>
-                    <div>
-                        <h2 style={{ fontSize: '1.6rem', fontWeight: '800', marginBottom: '0.5rem' }}>Personal <span className="gradient-text">Studio</span></h2>
-                        <p style={{ fontSize: '0.8rem', opacity: 0.5 }}>Customize {product.category}</p>
-                    </div>
-
-                    {/* Layer Tabs */}
-                    <div style={{ display: 'flex', gap: '0.5rem', background: 'var(--glass)', padding: '0.4rem', borderRadius: '12px' }}>
-                        <button
-                            onClick={() => setActiveLayer('text')}
-                            style={{ flex: 1, padding: '0.6rem', borderRadius: '8px', background: activeLayer === 'text' ? 'var(--primary)' : 'transparent', color: activeLayer === 'text' ? 'white' : 'var(--text-muted)', fontSize: '0.8rem' }}
-                        >
-                            Text
-                        </button>
-                        <button
-                            onClick={() => setActiveLayer('image')}
-                            style={{ flex: 1, padding: '0.6rem', borderRadius: '8px', background: activeLayer === 'image' ? 'var(--primary)' : 'transparent', color: activeLayer === 'image' ? 'white' : 'var(--text-muted)', fontSize: '0.8rem' }}
-                        >
-                            Logo
-                        </button>
-                    </div>
-
-                    {activeLayer === 'text' ? (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', animation: 'fadeIn 0.3s ease' }}>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '0.6rem', fontWeight: '700', fontSize: '0.7rem', textTransform: 'uppercase', opacity: 0.6 }}>Edit Text</label>
-                                <input
-                                    type="text"
-                                    value={text}
-                                    onChange={(e) => setText(e.target.value.toUpperCase())}
-                                    className="glass"
-                                    style={{ width: '100%', padding: '0.8rem', color: 'white', borderRadius: '12px', border: '1px solid var(--glass-border)' }}
-                                />
-                            </div>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '0.6rem', fontWeight: '700', fontSize: '0.7rem', textTransform: 'uppercase', opacity: 0.6 }}>Typography</label>
-                                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                    {['#ffffff', '#000000', '#ff2d55', '#ffcc00'].map(c => (
-                                        <button key={c} onClick={() => setTextColor(c)} style={{ width: '28px', height: '28px', backgroundColor: c, borderRadius: '50%', border: textColor === c ? '2px solid var(--primary)' : '1px solid var(--glass-border)' }} />
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    ) : (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', animation: 'fadeIn 0.3s ease' }}>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '0.6rem', fontWeight: '700', fontSize: '0.7rem', textTransform: 'uppercase', opacity: 0.6 }}>Upload Artwork</label>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
-                                    <label className="glass" style={{ padding: '0.8rem', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
-                                        <Upload size={16} />
-                                        <span style={{ fontSize: '0.65rem' }}>Local File</span>
-                                        <input type="file" hidden onChange={handleFileUpload} accept="image/*" />
-                                    </label>
-                                    <button onClick={handleUrlUpload} className="glass" style={{ padding: '0.8rem', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}>
-                                        <Plus size={16} />
-                                        <span style={{ fontSize: '0.65rem' }}>Image URL</span>
-                                    </button>
-                                </div>
-                            </div>
-                            {userImage && (
-                                <div>
-                                    <label style={{ display: 'block', marginBottom: '0.6rem', fontWeight: '700', fontSize: '0.7rem', textTransform: 'uppercase', opacity: 0.6 }}>Scale Size</label>
-                                    <input
-                                        type="range" min="0.5" max="2" step="0.1" value={imageScale}
-                                        onChange={(e) => setImageScale(parseFloat(e.target.value))}
-                                        style={{ width: '100%', accentColor: 'var(--primary)' }}
-                                    />
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    <div>
-                        <label style={{ display: 'block', marginBottom: '0.6rem', fontWeight: '700', fontSize: '0.7rem', textTransform: 'uppercase', opacity: 0.6 }}>Base Color</label>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem' }}>
-                            {colors.map(c => (
-                                <button key={c} onClick={() => setColor(c)} style={{ height: '30px', backgroundColor: c, borderRadius: '8px', border: color === c ? '2px solid var(--primary)' : '1px solid transparent' }} />
-                            ))}
-                        </div>
-                    </div>
-
-                    <div style={{ background: 'var(--glass)', padding: '1rem', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                        <label style={{ display: 'block', fontWeight: '700', fontSize: '0.7rem', textTransform: 'uppercase', opacity: 0.6 }}>Alignment Tools</label>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.4rem' }}>
-                            {['Top', 'Center', 'Bottom', 'Left', 'Mid', 'Right'].map(tool => (
-                                <button key={tool} onClick={() => {
-                                    const yMap = { Top: 25, Center: 50, Bottom: 75, Mid: 50 };
-                                    const xMap = { Left: 25, Mid: 50, Right: 75, Center: 50 };
-                                    if (activeLayer === 'text') {
-                                        setTextPos(p => ({
-                                            x: xMap[tool] !== undefined ? xMap[tool] : p.x,
-                                            y: yMap[tool] !== undefined ? yMap[tool] : p.y
-                                        }));
-                                    } else {
-                                        setImagePos(p => ({
-                                            x: xMap[tool] !== undefined ? xMap[tool] : p.x,
-                                            y: yMap[tool] !== undefined ? yMap[tool] : p.y
-                                        }));
-                                    }
-                                }} className="glass" style={{ padding: '0.5rem', borderRadius: '8px', fontSize: '0.7rem' }}>{tool}</button>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                        <button onClick={handleSave} className="glass" style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', fontSize: '0.85rem', fontWeight: '700', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                            <Share2 size={16} /> Share Link
-                        </button>
-                        <button
-                            onClick={handleAddToCart}
+                            className="product-canvas"
                             style={{
                                 width: '100%',
-                                padding: '1rem',
-                                background: 'var(--primary)',
-                                color: 'white',
+                                height: '100%',
+                                backgroundColor: color,
+                                clipPath: shapes[product.category] || shapes['T-Shirt'],
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                gap: '0.6rem',
-                                borderRadius: '16px',
-                                fontWeight: '800',
-                                fontSize: '0.95rem',
-                                boxShadow: '0 10px 30px var(--primary-glow)'
+                                transition: isDragging ? 'none' : 'background-color 0.6s cubic-bezier(0.23, 1, 0.32, 1)',
+                                boxShadow: '0 60px 120px rgba(0,0,0,0.8), inset 0 0 80px rgba(0,0,0,0.4)',
+                                transform: `perspective(2000px) rotateY(${product.category === 'Mug' ? '-8deg' : '-4deg'}) rotateX(2deg)`,
+                                position: 'relative'
                             }}
                         >
-                            <ShoppingBag size={18} /> Add to Bag
-                        </button>
-                    </div>
-                </aside>
+                            {/* Text Overlay */}
+                            <div
+                                onMouseDown={(e) => handleMouseDown(e, 'text')}
+                                style={{
+                                    position: 'absolute',
+                                    left: `${textPos.x}%`,
+                                    top: `${textPos.y}%`,
+                                    transform: 'translate(-50%, -50%)',
+                                    cursor: 'grab',
+                                    userSelect: 'none',
+                                    border: activeLayer === 'text' ? '2px solid var(--primary)' : '2px dashed transparent',
+                                    padding: '12px',
+                                    zIndex: 5,
+                                    borderRadius: '4px',
+                                    transition: 'border-color 0.3s'
+                                }}
+                            >
+                                <span style={{
+                                    color: textColor,
+                                    fontSize: 'min(3.5rem, 6vw)',
+                                    fontWeight: '900',
+                                    textTransform: 'uppercase',
+                                    textAlign: 'center',
+                                    maxWidth: '300px',
+                                    wordBreak: 'break-word',
+                                    textShadow: '0 10px 20px rgba(0,0,0,0.4)',
+                                    pointerEvents: 'none',
+                                    letterSpacing: '2px',
+                                    lineHeight: 1
+                                }}>
+                                    {text}
+                                </span>
+                            </div>
 
-                {/* Secondary QR Overlay - Fixed to screen, not inside t-shirt container */}
-                {showQR && (
-                    <div className="glass-heavy" style={{ position: 'fixed', bottom: '2rem', right: '2rem', padding: '1.2rem', borderRadius: '24px', textAlign: 'center', animation: 'fadeIn 0.5s ease', border: '1px solid var(--primary)', zIndex: 1000 }}>
-                        <p style={{ fontSize: '0.7rem', marginBottom: '0.8rem', opacity: 0.6, fontWeight: '800', letterSpacing: '1px' }}>SCAN TO SHARE</p>
-                        <div style={{ background: 'white', padding: '0.5rem', borderRadius: '12px' }}>
-                            <QRCode value={`${siteUrl}?design=${designId}`} size={120} />
+                            {/* Image Overlay */}
+                            {userImage && (
+                                <div
+                                    onMouseDown={(e) => handleMouseDown(e, 'image')}
+                                    style={{
+                                        position: 'absolute',
+                                        left: `${imagePos.x}%`,
+                                        top: `${imagePos.y}%`,
+                                        transform: `translate(-50%, -50%) scale(${imageScale})`,
+                                        cursor: 'grab',
+                                        userSelect: 'none',
+                                        border: activeLayer === 'image' ? '2px solid var(--primary)' : '2px dashed transparent',
+                                        width: '200px',
+                                        height: '200px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        zIndex: 4,
+                                        borderRadius: '4px',
+                                        transition: 'border-color 0.3s'
+                                    }}
+                                >
+                                    <img src={userImage} alt="userupload" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', pointerEvents: 'none' }} />
+                                </div>
+                            )}
                         </div>
                     </div>
-                )}
-            </main>
+
+                    {/* QR Code Floating Tag */}
+                    {showQR && (
+                        <div style={{ position: 'absolute', bottom: '2rem', left: '2rem', animation: 'slideRight 0.5s ease-out', zIndex: 1000 }}>
+                            <div className="glass-heavy" style={{ padding: '1.5rem', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                <div style={{ background: '#fff', padding: '0.6rem', borderRadius: '12px', marginBottom: '0.8rem' }}>
+                                    <QRCode value={`${siteUrl}?design=${designId}`} size={120} />
+                                </div>
+                                <p style={{ fontSize: '0.65rem', fontWeight: '800', opacity: 0.6, letterSpacing: '1px', textAlign: 'center' }}>SCAN TO PREVIEW</p>
+                            </div>
+                        </div>
+                    )}
+                </main>
+
+                {/* Control Panel (Right) */}
+                <aside style={{
+                    width: '420px',
+                    background: '#0f0f12',
+                    borderLeft: '1px solid rgba(255,255,255,0.05)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    zIndex: 2
+                }}>
+                    {/* Panel Tabs */}
+                    <div style={{ display: 'flex', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        {[
+                            { id: 'text', icon: <Type size={18} />, label: 'Graphics' },
+                            { id: 'image', icon: <Upload size={18} />, label: 'Upload' },
+                            { id: 'style', icon: <Palette size={18} />, label: 'Product' }
+                        ].map(tab => (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveLayer(tab.id === 'style' ? activeLayer : tab.id)}
+                                style={{
+                                    flex: 1,
+                                    padding: '1.5rem 0',
+                                    background: 'transparent',
+                                    border: 'none',
+                                    borderBottom: (activeLayer === tab.id || (tab.id === 'style' && activeLayer !== 'text' && activeLayer !== 'image')) ? `2px solid var(--primary)` : '2px solid transparent',
+                                    color: (activeLayer === tab.id || (tab.id === 'style' && activeLayer !== 'text' && activeLayer !== 'image')) ? '#fff' : 'rgba(255,255,255,0.3)',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    gap: '0.5rem',
+                                    fontSize: '0.75rem',
+                                    fontWeight: '700',
+                                    transition: 'all 0.3s'
+                                }}
+                            >
+                                {tab.icon}
+                                {tab.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Scrollable Properties */}
+                    <div style={{ flex: 1, overflowY: 'auto', padding: '2rem' }}>
+
+                        {/* Text Controls Content */}
+                        {activeLayer === 'text' && (
+                            <div style={{ animation: 'fadeIn 0.3s ease' }}>
+                                <section style={{ marginBottom: '2.5rem' }}>
+                                    <h3 style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '2px', opacity: 0.4, marginBottom: '1.2rem' }}>Headline Text</h3>
+                                    <textarea
+                                        value={text}
+                                        onChange={(e) => setText(e.target.value.toUpperCase())}
+                                        placeholder="Type something..."
+                                        style={{
+                                            width: '100%',
+                                            background: 'rgba(255,255,255,0.03)',
+                                            border: '1px solid rgba(255,255,255,0.08)',
+                                            borderRadius: '12px',
+                                            padding: '1rem',
+                                            color: '#fff',
+                                            fontSize: '1rem',
+                                            fontWeight: '600',
+                                            minHeight: '80px',
+                                            resize: 'none'
+                                        }}
+                                    />
+                                </section>
+
+                                <section style={{ marginBottom: '2.5rem' }}>
+                                    <h3 style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '2px', opacity: 0.4, marginBottom: '1.2rem' }}>Text Color</h3>
+                                    <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap' }}>
+                                        {['#ffffff', '#000000', '#ff2d55', '#ffcc00', '#6366f1', '#10b981'].map(c => (
+                                            <button
+                                                key={c}
+                                                onClick={() => setTextColor(c)}
+                                                style={{
+                                                    width: '36px',
+                                                    height: '36px',
+                                                    backgroundColor: c,
+                                                    borderRadius: '50%',
+                                                    border: textColor === c ? '2px solid var(--primary)' : '1px solid rgba(255,255,255,0.1)',
+                                                    cursor: 'pointer',
+                                                    transform: textColor === c ? 'scale(1.1)' : 'scale(1)',
+                                                    transition: 'all 0.2s'
+                                                }}
+                                            />
+                                        ))}
+                                    </div>
+                                </section>
+                            </div>
+                        )}
+
+                        {/* Image Controls Content */}
+                        {activeLayer === 'image' && (
+                            <div style={{ animation: 'fadeIn 0.3s ease' }}>
+                                <section style={{ marginBottom: '2.5rem' }}>
+                                    <h3 style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '2px', opacity: 0.4, marginBottom: '1.2rem' }}>Brand Identity</h3>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                        <label style={{
+                                            background: 'rgba(255,255,255,0.03)',
+                                            border: '1px dashed rgba(255,255,255,0.1)',
+                                            borderRadius: '16px',
+                                            padding: '2rem 1rem',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            gap: '0.8rem',
+                                            cursor: 'pointer',
+                                            transition: 'background 0.3s'
+                                        }} onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'} onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}>
+                                            <Upload size={24} style={{ opacity: 0.5 }} />
+                                            <span style={{ fontSize: '0.7rem', fontWeight: '700' }}>DEVICE</span>
+                                            <input type="file" hidden onChange={handleFileUpload} accept="image/*" />
+                                        </label>
+                                        <button
+                                            onClick={handleUrlUpload}
+                                            style={{
+                                                background: 'rgba(255,255,255,0.03)',
+                                                border: '1px solid rgba(255,255,255,0.08)',
+                                                borderRadius: '16px',
+                                                padding: '2rem 1rem',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                alignItems: 'center',
+                                                gap: '0.8rem',
+                                                cursor: 'pointer',
+                                                color: '#fff'
+                                            }}
+                                        >
+                                            <Plus size={24} style={{ opacity: 0.5 }} />
+                                            <span style={{ fontSize: '0.7rem', fontWeight: '700' }}>WEB URL</span>
+                                        </button>
+                                    </div>
+                                </section>
+
+                                {userImage && (
+                                    <section style={{ marginBottom: '2.5rem' }}>
+                                        <h3 style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '2px', opacity: 0.4, marginBottom: '1.2rem' }}>Image Scaling</h3>
+                                        <input
+                                            type="range" min="0.5" max="2.5" step="0.05" value={imageScale}
+                                            onChange={(e) => setImageScale(parseFloat(e.target.value))}
+                                            style={{ width: '100%', accentColor: 'var(--primary)' }}
+                                        />
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.5rem', fontSize: '0.6rem', opacity: 0.4 }}>
+                                            <span>SMALL</span>
+                                            <span>LARGE</span>
+                                        </div>
+                                    </section>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Global Styles Section */}
+                        <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '2rem', marginTop: '1rem' }}>
+                            <section style={{ marginBottom: '2.5rem' }}>
+                                <h3 style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '2px', opacity: 0.4, marginBottom: '1.2rem' }}>Product Color</h3>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
+                                    {colors.map(c => (
+                                        <button
+                                            key={c}
+                                            onClick={() => setColor(c)}
+                                            style={{
+                                                height: '44px',
+                                                backgroundColor: c,
+                                                borderRadius: '12px',
+                                                border: color === c ? `2px solid var(--primary)` : '1px solid rgba(255,255,255,0.1)',
+                                                cursor: 'pointer',
+                                                boxShadow: color === c ? `0 0 15px ${c}40` : 'none'
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+                            </section>
+
+                            <section style={{ marginBottom: '1rem' }}>
+                                <h3 style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '2px', opacity: 0.4, marginBottom: '1.2rem' }}>Positioning</h3>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
+                                    {['Top', 'Center', 'Bottom', 'Left', 'Mid', 'Right'].map(tool => (
+                                        <button
+                                            key={tool}
+                                            onClick={() => {
+                                                const yMap = { Top: 25, Center: 50, Bottom: 75, Mid: 50 };
+                                                const xMap = { Left: 25, Mid: 50, Right: 75, Center: 50 };
+                                                if (activeLayer === 'text') {
+                                                    setTextPos(p => ({
+                                                        x: xMap[tool] !== undefined ? xMap[tool] : p.x,
+                                                        y: yMap[tool] !== undefined ? yMap[tool] : p.y
+                                                    }));
+                                                } else if (activeLayer === 'image') {
+                                                    setImagePos(p => ({
+                                                        x: xMap[tool] !== undefined ? xMap[tool] : p.x,
+                                                        y: yMap[tool] !== undefined ? yMap[tool] : p.y
+                                                    }));
+                                                }
+                                            }}
+                                            className="glass"
+                                            style={{ padding: '0.8rem', borderRadius: '10px', fontSize: '0.7rem', fontWeight: '700' }}
+                                        >
+                                            {tool}
+                                        </button>
+                                    ))}
+                                </div>
+                                <p style={{ fontSize: '0.65rem', opacity: 0.4, marginTop: '1rem', fontStyle: 'italic' }}>
+                                    Tip: You can also click and drag elements directly on the product.
+                                </p>
+                            </section>
+                        </div>
+                    </div>
+                </aside>
+            </div>
         </div>
     );
 };
