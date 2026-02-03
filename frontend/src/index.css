@@ -1,19 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
 
 :root {
-  --primary: #6366f1;
-  --primary-dark: #4f46e5;
+  --primary: #8b5cf6;
+  --primary-glow: rgba(139, 92, 246, 0.5);
   --secondary: #ec4899;
-  --accent: #8b5cf6;
-  --background: #0f172a;
-  --surface: #1e293b;
-  --surface-light: #334155;
+  --accent: #06b6d4;
+  --background: #020617;
+  --surface: rgba(15, 23, 42, 0.8);
+  --surface-light: rgba(30, 41, 59, 0.5);
   --text: #f8fafc;
   --text-muted: #94a3b8;
-  --glass: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --radius: 12px;
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --glass: rgba(255, 255, 255, 0.03);
+  --glass-heavy: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 * {
@@ -40,9 +44,23 @@ button {
 
 .glass {
   background: var(--glass);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid var(--glass-border);
+}
+
+.glass-card {
+  background: var(--surface);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+}
+
+.glass-heavy {
+  background: var(--glass-heavy);
+  backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .gradient-text {
@@ -122,16 +140,17 @@ button {
   }
 
   .grid-insta {
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 1px !important;
-    padding: 1px !important;
-    background: var(--glass-border);
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+    padding: 1.5rem !important;
+    background: transparent;
   }
 
   .card-insta {
-    border-radius: 0 !important;
-    padding: 0 !important;
-    aspect-ratio: 1/1;
+    border-radius: var(--radius-lg) !important;
+    padding: 1rem !important;
+    aspect-ratio: auto !important;
+    min-height: 450px;
   }
 
   /* Customizer Mobile Stack */
@@ -148,17 +167,97 @@ button {
   }
 }
 
+/* Category Stories */
+.stories-container {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  padding: 1.5rem 0;
+  margin-bottom: 2rem;
+  scrollbar-width: none;
+}
+
+.stories-container::-webkit-scrollbar {
+  display: none;
+}
+
+.story-item {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.story-item:hover {
+  transform: scale(1.05);
+}
+
+.story-circle {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  padding: 3px;
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+}
+
+.story-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--background);
+  border: 2px solid var(--background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.story-inner img {
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+}
+
+.story-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+/* Premium Grid Adjustment */
+.lifestyle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2.5rem;
+  padding: 2rem;
+}
+
+@media (max-width: 640px) {
+  .lifestyle-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1rem;
+  }
+}
+
 .bottom-nav {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 60px;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 400px;
+  height: 70px;
   display: flex;
   justify-content: space-around;
   align-items: center;
   z-index: 1000;
-  border-top: 1px solid var(--glass-border);
+  border-radius: 50px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  padding: 0 1rem;
 }
 
 .nav-item-insta {

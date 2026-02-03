@@ -11,30 +11,33 @@ const Navbar = ({ activeTab, setActiveTab, onOpenAuth, onOpenCart, cartCount, us
   return (
     <>
       {/* Desktop Navbar */}
+      {/* Desktop Navbar */}
       <nav className="glass desktop-only" style={{
         position: 'fixed',
-        top: '1rem',
+        top: '2rem',
         left: '50%',
         transform: 'translateX(-50%)',
-        width: '95%',
-        maxWidth: '1200px',
-        padding: '0.6rem 1.5rem',
-        borderRadius: '50px',
+        width: 'auto',
+        minWidth: '600px',
+        padding: '0.8rem 2rem',
+        borderRadius: '100px',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        zIndex: 1000
+        justifyContent: 'center',
+        gap: '3rem',
+        zIndex: 1000,
+        boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
       }}>
         {/* Brand */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <div style={{ width: '40px', height: '40px', background: 'var(--primary)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
-            ASR
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', cursor: 'pointer' }} onClick={() => setActiveTab('home')}>
+          <div style={{ width: '36px', height: '36px', background: 'var(--primary)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '0.9rem', color: 'white' }}>
+            A
           </div>
-          <span className="gradient-text" style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>ASR Enterprises</span>
+          <span className="gradient-text" style={{ fontWeight: '800', fontSize: '1.1rem', letterSpacing: '-0.5px' }}>ASR</span>
         </div>
 
         {/* Navigation Tabs */}
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', gap: '1rem' }}>
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -42,41 +45,48 @@ const Navbar = ({ activeTab, setActiveTab, onOpenAuth, onOpenCart, cartCount, us
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.6rem 1rem',
+                gap: '0.6rem',
+                padding: '0.6rem 1.2rem',
                 borderRadius: '50px',
-                background: activeTab === tab.id ? 'var(--primary)' : 'transparent',
-                color: activeTab === tab.id ? 'white' : 'var(--text-muted)',
-                boxShadow: activeTab === tab.id ? '0 0 15px var(--primary)' : 'none'
+                background: activeTab === tab.id ? 'var(--glass-heavy)' : 'transparent',
+                color: activeTab === tab.id ? 'var(--text)' : 'var(--text-muted)',
+                position: 'relative',
+                overflow: 'hidden'
               }}
             >
-              <tab.icon size={18} />
-              <span style={{ fontSize: '0.9rem' }}>{tab.label}</span>
+              <tab.icon size={18} strokeWidth={activeTab === tab.id ? 2.5 : 2} />
+              <span style={{ fontSize: '0.9rem', fontWeight: activeTab === tab.id ? '700' : '500' }}>{tab.label}</span>
+              {activeTab === tab.id && (
+                <div style={{ position: 'absolute', bottom: 0, left: '20%', right: '20%', height: '2px', background: 'var(--primary)', boxShadow: '0 0 10px var(--primary)' }}></div>
+              )}
             </button>
           ))}
         </div>
 
         {/* Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
           <button
             onClick={onOpenCart}
-            style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)' }}
+            style={{ position: 'relative', color: 'var(--text-muted)', transition: 'var(--transition)' }}
+            onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text)'}
+            onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
           >
             <ShoppingBag size={22} />
             {cartCount > 0 && (
               <span style={{
                 position: 'absolute',
-                top: '-5px',
-                right: '-5px',
+                top: '-8px',
+                right: '-8px',
                 background: 'var(--secondary)',
                 color: 'white',
-                fontSize: '0.7rem',
+                fontSize: '0.65rem',
                 width: '18px',
                 height: '18px',
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                fontWeight: '900'
               }}>
                 {cartCount}
               </span>
@@ -84,94 +94,104 @@ const Navbar = ({ activeTab, setActiveTab, onOpenAuth, onOpenCart, cartCount, us
           </button>
 
           {user ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-              <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>{user.name}</span>
-              <button onClick={onLogout} style={{ color: '#ef4444' }}><LogOut size={20} /></button>
-            </div>
+            <button onClick={onLogout} className="glass" style={{ padding: '0.5rem', borderRadius: '50%' }}>
+              <LogOut size={18} />
+            </button>
           ) : (
             <button
               onClick={onOpenAuth}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.6rem 1.2rem',
-                background: 'var(--surface-light)',
-                borderRadius: '50px'
-              }}
+              className="glass"
+              style={{ padding: '0.6rem 1.5rem', borderRadius: '50px', fontSize: '0.85rem' }}
             >
-              <User size={18} />
-              <span>Login</span>
+              Login
             </button>
           )}
         </div>
       </nav>
 
-      {/* Mobile Top Bar */}
       <nav className="glass mobile-only" style={{
         position: 'fixed',
         top: 0,
         left: 0,
         right: 0,
-        padding: '0.8rem 1.2rem',
+        padding: '0.6rem 1.2rem',
         justifyContent: 'space-between',
         alignItems: 'center',
         zIndex: 1000,
-        borderTop: 'none',
         borderBottom: '1px solid var(--glass-border)',
         borderRadius: 0,
         height: '60px'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <div style={{ width: '32px', height: '32px', background: 'var(--primary)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '0.8rem' }}>ASR</div>
-          <span className="gradient-text" style={{ fontWeight: 'bold', fontSize: '1.2rem', fontFamily: 'serif' }}>ASR Enterprises</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+          <div style={{ width: '30px', height: '30px', background: 'var(--primary)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '0.75rem', color: 'white' }}>A</div>
+          <span className="gradient-text" style={{ fontWeight: '800', fontSize: '1.2rem' }}>ASR</span>
         </div>
-        <div style={{ display: 'flex', gap: '1.2rem', alignItems: 'center' }}>
-          <button onClick={onOpenCart} style={{ position: 'relative', color: 'var(--text)' }}>
-            <ShoppingBag size={24} />
-            {cartCount > 0 && (
-              <span style={{
-                position: 'absolute',
-                top: '-4px',
-                right: '-4px',
-                background: 'var(--secondary)',
-                color: 'white',
-                fontSize: '0.6rem',
-                width: '16px',
-                height: '16px',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 'bold'
-              }}>
-                {cartCount}
-              </span>
-            )}
-          </button>
-        </div>
+        <button onClick={onOpenCart} style={{ position: 'relative', color: 'var(--text)' }}>
+          <ShoppingBag size={22} />
+          {cartCount > 0 && (
+            <span style={{
+              position: 'absolute',
+              top: '-4px',
+              right: '-4px',
+              background: 'var(--secondary)',
+              color: 'white',
+              fontSize: '0.6rem',
+              width: '16px',
+              height: '16px',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: '900'
+            }}>
+              {cartCount}
+            </span>
+          )}
+        </button>
       </nav>
 
       {/* Mobile Bottom Bar */}
-      <nav className="glass mobile-only bottom-nav" style={{ borderRadius: 0 }}>
+      <nav className="glass-heavy mobile-only bottom-nav" style={{ overflow: 'hidden' }}>
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`nav-item-insta ${activeTab === tab.id ? 'active' : ''}`}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '4px',
+              color: activeTab === tab.id ? 'var(--primary)' : 'var(--text-muted)',
+              background: 'transparent',
+              transition: 'var(--transition)'
+            }}
           >
-            <tab.icon size={26} strokeWidth={activeTab === tab.id ? 2.5 : 2} />
-            <span>{tab.label}</span>
+            <div style={{
+              padding: '8px 16px',
+              borderRadius: '20px',
+              background: activeTab === tab.id ? 'var(--primary-glow)' : 'transparent',
+              display: 'flex',
+              alignItems: 'center'
+            }}>
+              <tab.icon size={22} strokeWidth={activeTab === tab.id ? 2.5 : 2} />
+            </div>
           </button>
         ))}
         <button
           onClick={onOpenAuth}
-          className="nav-item-insta"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'var(--text-muted)',
+            background: 'transparent'
+          }}
         >
-          <div style={{ width: '26px', height: '26px', borderRadius: '50%', border: '2px solid var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <User size={16} />
+          <div style={{ width: '24px', height: '24px', borderRadius: '50%', border: '2px solid var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <User size={14} />
           </div>
-          <span>Profile</span>
         </button>
       </nav>
     </>

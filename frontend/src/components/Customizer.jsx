@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Palette, Type, Upload, Save, Share2, ShoppingBag, Plus } from 'lucide-react';
+import { Palette, Type, Upload, Save, Share2, ShoppingBag, Plus, ArrowRight } from 'lucide-react';
 import QRCode from 'react-qr-code';
 import confetti from 'canvas-confetti';
 
@@ -57,68 +57,78 @@ const Customizer = ({ onAddToCart, initialProduct }) => {
     };
 
     return (
-        <div className="customizer-layout" style={{ padding: '6rem 2rem 2rem', display: 'grid', gridTemplateColumns: '1fr 350px', gap: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
-            {/* Preview Area */}
-            <div className="glass preview-area" style={{ borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', minHeight: '500px' }}>
+        <div className="customizer-layout" style={{ padding: '6rem 2rem 8rem', display: 'grid', gridTemplateColumns: '1fr 400px', gap: '3rem', maxWidth: '1400px', margin: '0 auto', minHeight: '100vh' }}>
+            {/* Immersive Preview Area */}
+            <div className="glass-card preview-area" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'radial-gradient(circle at 50% 50%, #1e293b 0%, #020617 100%)', overflow: 'hidden' }}>
                 <button
-                    className="mobile-only glass"
+                    className="glass"
                     onClick={() => window.history.back()}
-                    style={{ position: 'absolute', top: '1rem', left: '1rem', padding: '0.5rem 1rem', borderRadius: '50px', zIndex: 10 }}
+                    style={{ position: 'absolute', top: '2rem', left: '2rem', padding: '0.8rem 1.5rem', borderRadius: '50px', zIndex: 10, display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', fontWeight: 'bold' }}
                 >
-                    ← Back
+                    <ArrowRight size={18} style={{ transform: 'rotate(180deg)' }} /> Back to Shop
                 </button>
+
                 <div style={{
-                    width: '400px',
-                    height: '400px',
+                    width: '450px',
+                    height: '450px',
                     backgroundColor: color,
                     clipPath: shapes[product.category] || shapes['T-Shirt'],
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    transition: 'all 0.5s ease',
-                    boxShadow: 'inset 0 0 50px rgba(0,0,0,0.2)'
+                    transition: 'all 0.6s cubic-bezier(0.23, 1, 0.32, 1)',
+                    boxShadow: '0 50px 100px rgba(0,0,0,0.5), inset 0 0 80px rgba(0,0,0,0.3)',
+                    transform: 'perspective(1000px) rotateY(-5deg)',
                 }}>
                     <span style={{
                         color: textColor,
-                        fontSize: '2rem',
-                        fontWeight: 'bold',
+                        fontSize: '2.5rem',
+                        fontWeight: '900',
                         textTransform: 'uppercase',
                         textAlign: 'center',
-                        maxWidth: '200px',
+                        maxWidth: '250px',
                         wordBreak: 'break-word',
-                        textShadow: '0 2px 4px rgba(0,0,0,0.3)'
+                        textShadow: '0 4px 12px rgba(0,0,0,0.5)',
+                        letterSpacing: '2px'
                     }}>
                         {text}
                     </span>
                 </div>
 
                 {showQR && (
-                    <div className="glass" style={{ position: 'absolute', top: '2rem', right: '2rem', padding: '1rem', borderRadius: '16px', textAlign: 'center', animation: 'fadeIn 0.5s ease' }}>
-                        <p style={{ fontSize: '0.8rem', marginBottom: '0.5rem', opacity: 0.7 }}>SCAN TO VIEW</p>
-                        <QRCode value={`${siteUrl}?design=${designId}`} size={128} bgColor="transparent" fgColor="#ffffff" />
+                    <div className="glass-heavy" style={{ position: 'absolute', bottom: '2rem', right: '2rem', padding: '1.2rem', borderRadius: '24px', textAlign: 'center', animation: 'fadeIn 0.5s ease', border: '1px solid var(--primary)' }}>
+                        <p style={{ fontSize: '0.7rem', marginBottom: '0.8rem', opacity: 0.6, fontWeight: '800', letterSpacing: '1px' }}>SHARE DESIGN</p>
+                        <div style={{ background: 'white', padding: '0.5rem', borderRadius: '12px' }}>
+                            <QRCode value={`${siteUrl}?design=${designId}`} size={100} />
+                        </div>
                     </div>
                 )}
             </div>
 
-            {/* Controls Area */}
-            <div className="glass controls-area" style={{ borderRadius: '24px', padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.8rem' }}>
-                <h2 className="gradient-text" style={{ fontSize: '1.5rem' }}>{product.name} Studio</h2>
+            {/* Studio Controls */}
+            <div className="glass-card" style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+                <div>
+                    <h2 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '0.5rem' }}>Custom <span className="gradient-text">{product.category}</span></h2>
+                    <p style={{ fontSize: '0.9rem', opacity: 0.5 }}>Studio Edition • Handcrafted Design</p>
+                </div>
 
                 <div>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', opacity: 0.8, fontSize: '0.9rem' }}>
-                        <Palette size={16} /> Base Color
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.2rem', fontWeight: '700', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                        <Palette size={16} color="var(--primary)" /> Selection Palette
                     </label>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.8rem' }}>
                         {colors.map(c => (
                             <button
                                 key={c}
                                 onClick={() => setColor(c)}
                                 style={{
-                                    height: '35px',
+                                    height: '45px',
                                     backgroundColor: c,
-                                    borderRadius: '8px',
-                                    border: color === c ? '2px solid white' : 'none',
-                                    boxShadow: color === c ? '0 0 10px white' : 'none'
+                                    borderRadius: '12px',
+                                    border: color === c ? '3px solid var(--primary)' : '2px solid transparent',
+                                    transition: 'var(--transition)',
+                                    transform: color === c ? 'scale(1.1)' : 'scale(1)',
+                                    boxShadow: color === c ? '0 0 20px var(--primary-glow)' : 'none'
                                 }}
                             />
                         ))}
@@ -126,66 +136,74 @@ const Customizer = ({ onAddToCart, initialProduct }) => {
                 </div>
 
                 <div>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', opacity: 0.8, fontSize: '0.9rem' }}>
-                        <Type size={16} /> Custom Text
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.2rem', fontWeight: '700', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                        <Type size={16} color="var(--primary)" /> Signature Text
                     </label>
                     <input
                         type="text"
                         value={text}
                         onChange={(e) => setText(e.target.value.toUpperCase())}
                         className="glass"
-                        style={{ width: '100%', padding: '0.8rem', color: 'white', borderRadius: '12px' }}
-                        placeholder="Type here..."
+                        style={{ width: '100%', padding: '1.2rem', color: 'white', borderRadius: '16px', fontSize: '1rem', fontWeight: '600', border: '1px solid var(--glass-border)' }}
+                        placeholder="Enter your text..."
                     />
                 </div>
 
                 <div>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', opacity: 0.8, fontSize: '0.9rem' }}>
-                        <Palette size={16} /> Text Color
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.2rem', fontWeight: '700', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                        <Palette size={16} color="var(--primary)" /> Typography Color
                     </label>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem' }}>
-                        {['#ffffff', '#000000', '#ff0000', '#ffff00'].map(c => (
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                        {['#ffffff', '#000000', '#ff2d55', '#ffcc00'].map(c => (
                             <button
                                 key={c}
                                 onClick={() => setTextColor(c)}
                                 style={{
+                                    width: '35px',
                                     height: '35px',
                                     backgroundColor: c,
-                                    borderRadius: '8px',
-                                    border: textColor === c ? '2px solid white' : 'none'
+                                    borderRadius: '50%',
+                                    border: textColor === c ? '3px solid var(--primary)' : '2px solid var(--glass-border)',
+                                    transition: 'var(--transition)'
                                 }}
                             />
                         ))}
                     </div>
                 </div>
 
-                <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <button
                         onClick={handleSave}
                         className="glass"
                         style={{
-                            padding: '1rem',
+                            padding: '1.2rem',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            gap: '0.5rem'
+                            gap: '0.8rem',
+                            borderRadius: '16px',
+                            fontWeight: '700'
                         }}
                     >
-                        <Save size={18} /> Save Design
+                        <Share2 size={20} /> Share Studio Link
                     </button>
                     <button
                         onClick={handleAddToCart}
                         style={{
-                            padding: '1rem',
+                            padding: '1.2rem',
                             background: 'var(--primary)',
                             color: 'white',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            gap: '0.5rem'
+                            gap: '0.8rem',
+                            borderRadius: '16px',
+                            fontWeight: '800',
+                            fontSize: '1.1rem',
+                            boxShadow: '0 10px 30px var(--primary-glow)'
                         }}
                     >
-                        <Plus size={18} /> Add to Bag
+                        <ShoppingBag size={22} /> Add to Collection
                     </button>
                 </div>
             </div>
