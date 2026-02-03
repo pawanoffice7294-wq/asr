@@ -57,9 +57,16 @@ const Customizer = ({ onAddToCart, initialProduct }) => {
     };
 
     return (
-        <div style={{ padding: '6rem 2rem 2rem', display: 'grid', gridTemplateColumns: '1fr 350px', gap: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
+        <div className="customizer-layout" style={{ padding: '6rem 2rem 2rem', display: 'grid', gridTemplateColumns: '1fr 350px', gap: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
             {/* Preview Area */}
-            <div className="glass" style={{ borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', minHeight: '500px' }}>
+            <div className="glass preview-area" style={{ borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', minHeight: '500px' }}>
+                <button
+                    className="mobile-only glass"
+                    onClick={() => window.history.back()}
+                    style={{ position: 'absolute', top: '1rem', left: '1rem', padding: '0.5rem 1rem', borderRadius: '50px', zIndex: 10 }}
+                >
+                    ← Back
+                </button>
                 <div style={{
                     width: '400px',
                     height: '400px',
@@ -94,7 +101,7 @@ const Customizer = ({ onAddToCart, initialProduct }) => {
             </div>
 
             {/* Controls Area */}
-            <div className="glass" style={{ borderRadius: '24px', padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.8rem' }}>
+            <div className="glass controls-area" style={{ borderRadius: '24px', padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.8rem' }}>
                 <h2 className="gradient-text" style={{ fontSize: '1.5rem' }}>{product.name} Studio</h2>
 
                 <div>

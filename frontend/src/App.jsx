@@ -70,7 +70,7 @@ function App() {
         onLogout={handleLogout}
       />
 
-      <main style={{ minHeight: '100vh', paddingBottom: '4rem' }}>
+      <main className="main-content" style={{ minHeight: '100vh' }}>
         {renderContent()}
       </main>
 
@@ -87,7 +87,7 @@ function App() {
         removeFromCart={removeFromCart}
       />
 
-      <footer style={{ padding: '4rem 2rem', textAlign: 'center', opacity: 0.5, fontSize: '0.9rem', background: 'rgba(0,0,0,0.2)' }}>
+      <footer className="desktop-only" style={{ padding: '4rem 2rem', textAlign: 'center', opacity: 0.5, fontSize: '0.9rem', background: 'rgba(0,0,0,0.2)' }}>
         &copy; 2026 ASR Enterprises • Premium Customizable Clothing
       </footer>
     </div>

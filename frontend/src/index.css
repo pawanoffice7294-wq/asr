@@ -106,3 +106,83 @@ button {
     transform: scale(1);
   }
 }
+
+/* Mobile Utilities */
+.mobile-only {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: flex !important;
+  }
+
+  .grid-insta {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 1px !important;
+    padding: 1px !important;
+    background: var(--glass-border);
+  }
+
+  .card-insta {
+    border-radius: 0 !important;
+    padding: 0 !important;
+    aspect-ratio: 1/1;
+  }
+
+  /* Customizer Mobile Stack */
+  .customizer-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .preview-area {
+    min-height: 400px !important;
+  }
+
+  .controls-area {
+    padding: 1.5rem !important;
+  }
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1000;
+  border-top: 1px solid var(--glass-border);
+}
+
+.nav-item-insta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  background: transparent;
+  padding: 0.5rem;
+}
+
+.nav-item-insta.active {
+  color: var(--text);
+}
+
+.main-content {
+  padding-bottom: 4rem;
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding-bottom: 65px;
+  }
+}
