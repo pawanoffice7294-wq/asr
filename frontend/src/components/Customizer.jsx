@@ -195,7 +195,8 @@ const Customizer = ({ onAddToCart, initialProduct }) => {
                         alignItems: 'center',
                         justifyContent: 'center',
                         background: 'radial-gradient(circle at center, #1a1a20 0%, #0a0a0c 100%)',
-                        cursor: isDragging ? 'grabbing' : 'auto'
+                        cursor: isDragging ? 'grabbing' : 'auto',
+                        minHeight: '400px'
                     }}
                     onMouseMove={handleMouseMove}
                     onMouseUp={handleMouseUp}
@@ -204,40 +205,39 @@ const Customizer = ({ onAddToCart, initialProduct }) => {
                     {/* Shadow Pedestal */}
                     <div style={{
                         position: 'absolute',
-                        bottom: '15%',
-                        width: '400px',
-                        height: '40px',
-                        background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.5) 0%, transparent 70%)',
-                        filter: 'blur(10px)'
+                        bottom: '10%',
+                        width: '300px',
+                        height: '20px',
+                        background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.6) 0%, transparent 80%)',
+                        filter: 'blur(10px)',
+                        zIndex: 1
                     }}></div>
 
-                    {/* Canvas Container */}
+                    {/* Canvas Stage - Fixed Aspect Ratio Scaling */}
                     <div
                         className="product-canvas-stage"
                         style={{
-                            width: 'min(600px, 80%)',
-                            height: 'min(600px, 80%)',
+                            width: '400px',
+                            height: '400px',
                             position: 'relative',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            zIndex: 2
+                            zIndex: 2,
+                            transform: 'scale(1.2)' // Scale the 400px base up
                         }}
                     >
                         <div
                             className="product-canvas"
                             style={{
-                                width: '100%',
-                                height: '100%',
+                                width: '400px', // Exactly match path coords
+                                height: '400px',
                                 backgroundColor: color,
                                 clipPath: shapes[product.category] || shapes['T-Shirt'],
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
                                 transition: isDragging ? 'none' : 'background-color 0.6s cubic-bezier(0.23, 1, 0.32, 1)',
-                                boxShadow: '0 60px 120px rgba(0,0,0,0.8), inset 0 0 80px rgba(0,0,0,0.4)',
-                                transform: `perspective(2000px) rotateY(${product.category === 'Mug' ? '-8deg' : '-4deg'}) rotateX(2deg)`,
-                                position: 'relative'
+                                transform: `perspective(1000px) rotateY(${product.category === 'Mug' ? '-8deg' : '-4deg'}) rotateX(2deg)`,
+                                position: 'relative',
+                                boxShadow: 'inset 0 0 80px rgba(0,0,0,0.3)'
                             }}
                         >
                             {/* Text Overlay */}
@@ -253,21 +253,20 @@ const Customizer = ({ onAddToCart, initialProduct }) => {
                                     border: activeLayer === 'text' ? '2px solid var(--primary)' : '2px dashed transparent',
                                     padding: '12px',
                                     zIndex: 5,
-                                    borderRadius: '4px',
-                                    transition: 'border-color 0.3s'
+                                    borderRadius: '4px'
                                 }}
                             >
                                 <span style={{
                                     color: textColor,
-                                    fontSize: 'min(3.5rem, 6vw)',
+                                    fontSize: '2.5rem',
                                     fontWeight: '900',
                                     textTransform: 'uppercase',
                                     textAlign: 'center',
-                                    maxWidth: '300px',
+                                    maxWidth: '280px',
                                     wordBreak: 'break-word',
-                                    textShadow: '0 10px 20px rgba(0,0,0,0.4)',
+                                    textShadow: '0 8px 16px rgba(0,0,0,0.4)',
                                     pointerEvents: 'none',
-                                    letterSpacing: '2px',
+                                    letterSpacing: '1px',
                                     lineHeight: 1
                                 }}>
                                     {text}
@@ -286,14 +285,13 @@ const Customizer = ({ onAddToCart, initialProduct }) => {
                                         cursor: 'grab',
                                         userSelect: 'none',
                                         border: activeLayer === 'image' ? '2px solid var(--primary)' : '2px dashed transparent',
-                                        width: '200px',
-                                        height: '200px',
+                                        width: '180px',
+                                        height: '180px',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                         zIndex: 4,
-                                        borderRadius: '4px',
-                                        transition: 'border-color 0.3s'
+                                        borderRadius: '4px'
                                     }}
                                 >
                                     <img src={userImage} alt="userupload" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', pointerEvents: 'none' }} />
@@ -304,12 +302,12 @@ const Customizer = ({ onAddToCart, initialProduct }) => {
 
                     {/* QR Code Floating Tag */}
                     {showQR && (
-                        <div style={{ position: 'absolute', bottom: '2rem', left: '2rem', animation: 'slideRight 0.5s ease-out', zIndex: 1000 }}>
-                            <div className="glass-heavy" style={{ padding: '1.5rem', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                                <div style={{ background: '#fff', padding: '0.6rem', borderRadius: '12px', marginBottom: '0.8rem' }}>
-                                    <QRCode value={`${siteUrl}?design=${designId}`} size={120} />
+                        <div style={{ position: 'absolute', bottom: '2rem', left: '2rem', animation: 'slideRight 0.5s ease-out', zIndex: 10 }}>
+                            <div className="glass-heavy" style={{ padding: '1.2rem', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                <div style={{ background: '#fff', padding: '0.4rem', borderRadius: '10px', marginBottom: '0.6rem' }}>
+                                    <QRCode value={`${siteUrl}?design=${designId}`} size={80} />
                                 </div>
-                                <p style={{ fontSize: '0.65rem', fontWeight: '800', opacity: 0.6, letterSpacing: '1px', textAlign: 'center' }}>SCAN TO PREVIEW</p>
+                                <p style={{ fontSize: '0.6rem', fontWeight: '800', opacity: 0.6, letterSpacing: '1px', textAlign: 'center' }}>SCAN TO PREVIEW</p>
                             </div>
                         </div>
                     )}
