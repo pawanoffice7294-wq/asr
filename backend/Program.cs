@@ -21,7 +21,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5173", "http://127.0.0.1:5173")
+        policy.AllowAnyOrigin()
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -44,6 +44,38 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     context.Database.EnsureCreated();
+    
+    // Manual schema fix for added columns (since EnsureCreated doesn't handle migrations)
+    try 
+    {
+        var conn = context.Database.GetDbConnection();
+        conn.Open();
+        using var cmd = conn.CreateCommand();
+        
+        // Add Role to Users if missing - Try both quoted and unquoted for Postgres compatibility
+        cmd.CommandText = @"
+            DO $$ 
+            BEGIN 
+                IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'Users') THEN
+                    ALTER TABLE ""Users"" ADD COLUMN IF NOT EXISTS ""Role"" text DEFAULT 'User';
+                ELSIF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'users') THEN
+                    ALTER TABLE users ADD COLUMN IF NOT EXISTS role text DEFAULT 'User';
+                END IF;
+
+                IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'Products') THEN
+                    ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""ReelsUrl"" text DEFAULT '';
+                ELSIF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'products') THEN
+                    ALTER TABLE products ADD COLUMN IF NOT EXISTS reels_url text DEFAULT '';
+                END IF;
+            END $$;";
+        cmd.ExecuteNonQuery();
+        
+        conn.Close();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("Schema update notice: " + ex.Message);
+    }
 }
 
 app.MapControllers();

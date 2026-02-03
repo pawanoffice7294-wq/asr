@@ -1,5 +1,4 @@
-import React from 'react';
-import { Shirt, Cpu, QrCode, ShoppingBag, User, LogOut } from 'lucide-react';
+import { Shirt, Cpu, QrCode, ShoppingBag, User, LogOut, Shield, Lock } from 'lucide-react';
 
 const Navbar = ({ activeTab, setActiveTab, onOpenAuth, onOpenCart, cartCount, user, onLogout }) => {
   const tabs = [
@@ -7,6 +6,10 @@ const Navbar = ({ activeTab, setActiveTab, onOpenAuth, onOpenCart, cartCount, us
     { id: 'customize', icon: Cpu, label: 'Create' },
     { id: 'scanner', icon: QrCode, label: 'QR' },
   ];
+
+  if (user?.role === 'Admin') {
+    tabs.push({ id: 'admin', icon: Shield, label: 'Admin' });
+  }
 
   return (
     <>
@@ -98,13 +101,38 @@ const Navbar = ({ activeTab, setActiveTab, onOpenAuth, onOpenCart, cartCount, us
               <LogOut size={18} />
             </button>
           ) : (
-            <button
-              onClick={onOpenAuth}
-              className="glass"
-              style={{ padding: '0.6rem 1.5rem', borderRadius: '50px', fontSize: '0.85rem' }}
-            >
-              Login
-            </button>
+            <div style={{ display: 'flex', gap: '0.8rem' }}>
+              <div
+                style={{ position: 'relative' }}
+                title="Admin Access"
+              >
+                <button
+                  onClick={() => setActiveTab('admin-login')}
+                  className="glass"
+                  style={{
+                    padding: '0.6rem 1.2rem',
+                    borderRadius: '50px',
+                    fontSize: '0.85rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    border: '1px solid var(--secondary)',
+                    color: 'var(--secondary)',
+                    fontWeight: '700',
+                    boxShadow: '0 0 15px rgba(236, 72, 153, 0.15)'
+                  }}
+                >
+                  <Lock size={16} /> Admin
+                </button>
+              </div>
+              <button
+                onClick={onOpenAuth}
+                className="glass"
+                style={{ padding: '0.6rem 1.5rem', borderRadius: '50px', fontSize: '0.85rem' }}
+              >
+                Login
+              </button>
+            </div>
           )}
         </div>
       </nav>

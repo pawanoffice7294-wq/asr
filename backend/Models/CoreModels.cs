@@ -17,6 +17,8 @@ public class Product
     public string Category { get; set; } = "Apparel";
     
     public string ImagePath { get; set; } = string.Empty;
+    
+    public string ReelsUrl { get; set; } = string.Empty; // URL to video/reel
 }
 
 public class CustomDesign

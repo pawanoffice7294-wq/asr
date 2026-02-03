@@ -5,6 +5,8 @@ import Customizer from './components/Customizer';
 import Scanner from './components/Scanner';
 import AuthModal from './components/AuthModal';
 import CartDrawer from './components/CartDrawer';
+import AdminPanel from './components/AdminPanel';
+import AdminLogin from './components/AdminLogin';
 
 function App() {
   const [activeTab, setActiveTab] = useState('home');
@@ -50,9 +52,13 @@ function App() {
       case 'home':
         return <Collection onCustomize={openCustomizer} onAddToCart={addToCart} />;
       case 'customize':
-        return <Customizer onAddToCart={addToCart} initialProduct={selectedProduct} />;
+        return <Customizer onAddToCart={addToCart} initialProduct={selectedProduct} onExit={() => setActiveTab('home')} />;
       case 'scanner':
         return <Scanner />;
+      case 'admin':
+        return user?.role === 'Admin' ? <AdminPanel /> : <Collection onCustomize={openCustomizer} onAddToCart={addToCart} />;
+      case 'admin-login':
+        return <AdminLogin onLogin={(u) => { setUser(u); setActiveTab('admin'); }} />;
       default:
         return <Collection onCustomize={openCustomizer} onAddToCart={addToCart} />;
     }
@@ -60,15 +66,17 @@ function App() {
 
   return (
     <div className="App">
-      <Navbar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        onOpenAuth={() => setIsAuthOpen(true)}
-        onOpenCart={() => setIsCartOpen(true)}
-        cartCount={cart.length}
-        user={user}
-        onLogout={handleLogout}
-      />
+      {activeTab !== 'customize' && activeTab !== 'admin-login' && (
+        <Navbar
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          onOpenAuth={() => setIsAuthOpen(true)}
+          onOpenCart={() => setIsCartOpen(true)}
+          cartCount={cart.length}
+          user={user}
+          onLogout={handleLogout}
+        />
+      )}
 
       <main className="main-content" style={{ minHeight: '100vh' }}>
         {renderContent()}
@@ -89,6 +97,16 @@ function App() {
 
       <footer className="desktop-only" style={{ padding: '4rem 2rem', textAlign: 'center', opacity: 0.5, fontSize: '0.9rem', background: 'rgba(0,0,0,0.2)' }}>
         &copy; 2026 ASR Enterprises • Premium Customizable Clothing
+        {!user && activeTab !== 'admin-login' && (
+          <div style={{ marginTop: '1rem', fontSize: '0.7rem' }}>
+            <span
+              onClick={() => setActiveTab('admin-login')}
+              style={{ cursor: 'pointer', opacity: 0.5 }}
+            >
+              Store Manager?
+            </span>
+          </div>
+        )}
       </footer>
     </div>
   );

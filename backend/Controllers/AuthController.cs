@@ -28,13 +28,14 @@ public class AuthController : ControllerBase
             Name = request.Name,
             Email = request.Email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+            Role = request.Email.ToLower() == "admin@asr.com" ? "Admin" : "User",
             CreatedAt = DateTime.UtcNow
         };
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        return Ok(new { user.Id, user.Name, user.Email });
+        return Ok(new { user.Id, user.Name, user.Email, user.Role });
     }
 
     [HttpPost("login")]
@@ -45,7 +46,7 @@ public class AuthController : ControllerBase
         if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             return Unauthorized("Invalid email or password");
 
-        return Ok(new { user.Id, user.Name, user.Email });
+        return Ok(new { user.Id, user.Name, user.Email, user.Role });
     }
 }
 

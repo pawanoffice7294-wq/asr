@@ -1,7 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { ShoppingBag, ArrowRight, Star, Plus, Download } from 'lucide-react';
 import QRCode from 'react-qr-code';
 import { toPng } from 'html-to-image';
+import { getProducts } from '../utils/api';
 
 const Collection = ({ onCustomize, onAddToCart }) => {
     const siteUrl = window.location.origin;
@@ -30,14 +31,39 @@ const Collection = ({ onCustomize, onAddToCart }) => {
         { id: 'Pillow', name: 'Soft Rest', image: '/products/white_pillow_asr_1769234741512.png' },
     ];
 
-    const products = [
-        { id: 1, name: 'Signature Tee', price: '₹499', image: '/products/white_tshirt_asr_1769234711724.png', category: 'T-Shirt', featured: true },
-        { id: 2, name: 'Oversized Hoodie', price: '₹1299', image: '/products/hoodie_asr_white_1769235205914.png', category: 'Hoodie' },
-        { id: 3, name: 'Designer Tote', price: '₹399', image: '/products/ecobag_asr_white_1769235236150.png', category: 'Bag' },
-        { id: 4, name: 'Pro Snapback', price: '₹599', image: '/products/snapback_asr_white_1769235221302.png', category: 'Hat' },
-        { id: 5, name: 'Artisan Mug', price: '₹299', image: '/products/white_mug_asr_1769234726825.png', category: 'Mug' },
-        { id: 6, name: 'Cloud Pillow', price: '₹899', image: '/products/white_pillow_asr_1769234741512.png', category: 'Pillow', featured: true },
-    ];
+    const [products, setProducts] = useState([
+        { id: 1, name: 'Signature Tee', price: 'Rs 99 - 999', image: '/products/white_tshirt_asr_1769234711724.png', category: 'T-Shirt', featured: true },
+        { id: 2, name: 'Oversized Hoodie', price: 'Rs 99 - 999', image: '/products/hoodie_asr_white_1769235205914.png', category: 'Hoodie' },
+        { id: 3, name: 'Designer Tote', price: 'Rs 99 - 999', image: '/products/ecobag_asr_white_1769235236150.png', category: 'Bag' },
+        { id: 4, name: 'Pro Snapback', price: 'Rs 99 - 999', image: '/products/snapback_asr_white_1769235221302.png', category: 'Hat' },
+        { id: 5, name: 'Artisan Mug', price: 'Rs 99 - 999', image: '/products/white_mug_asr_1769234726825.png', category: 'Mug' },
+        { id: 6, name: 'Cloud Pillow', price: 'Rs 99 - 999', image: '/products/white_pillow_asr_1769234741512.png', category: 'Pillow', featured: true },
+    ]);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const data = await getProducts();
+                console.log("Fetched products from API:", data);
+                if (data && data.length > 0) {
+                    setProducts(data.map(p => ({
+                        id: p.id,
+                        name: p.name,
+                        price: 'Rs 99 - 999', // User requested fixed price label for all products
+                        image: p.imagePath,
+                        category: p.category,
+                        featured: p.category === 'T-Shirt' || p.category === 'Pillow'
+                    })));
+                } else {
+                    console.log("API returned no products, using fallback.");
+                }
+            } catch (error) {
+                console.error("Error fetching products:", error);
+                console.log("Using offline mode for products");
+            }
+        };
+        fetchProducts();
+    }, []);
 
     return (
         <div style={{ paddingBottom: '8rem' }}>
@@ -95,8 +121,8 @@ const Collection = ({ onCustomize, onAddToCart }) => {
                             overflow: 'hidden',
                             display: 'flex',
                             flexDirection: 'column',
-                            aspectRatio: p.featured ? '4/5' : '1/1',
-                            gridColumn: p.featured ? 'span 1' : 'auto'
+                            aspectRatio: '4/5', // Unified height for all cards
+                            gridColumn: 'auto'
                         }}
                     >
                         <div

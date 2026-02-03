@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Palette, Type, Upload, Save, Share2, ShoppingBag, Plus, ArrowRight } from 'lucide-react';
+import { Palette, Type, Upload, Share2, ShoppingBag, Plus, ArrowRight } from 'lucide-react';
 import QRCode from 'react-qr-code';
 import confetti from 'canvas-confetti';
+import { saveDesign } from '../utils/api';
 
-const Customizer = ({ onAddToCart, initialProduct }) => {
+const Customizer = ({ onAddToCart, initialProduct, onExit }) => {
     // Fallback if initialProduct is null (e.g., from Navbar)
     const defaultProduct = { id: 1, category: 'T-Shirt', name: 'Premium Tee', image: '/products/white_tshirt_asr_1769234711724.png' };
     const [product, setProduct] = useState(initialProduct || defaultProduct);
@@ -22,6 +23,7 @@ const Customizer = ({ onAddToCart, initialProduct }) => {
 
     const [showQR, setShowQR] = useState(false);
     const [designId, setDesignId] = useState('');
+    const [isSaving, setIsSaving] = useState(false);
 
     const siteUrl = window.location.origin;
 
@@ -78,36 +80,65 @@ const Customizer = ({ onAddToCart, initialProduct }) => {
 
     const handleMouseUp = () => setIsDragging(false);
 
-    const handleSave = () => {
-        const id = Math.random().toString(36).substring(7);
-        setDesignId(id);
-        setShowQR(true);
-        confetti({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 },
-            colors: [color, '#ffffff']
-        });
+    const handleSave = async () => {
+        setIsSaving(true);
+        try {
+            const config = {
+                color, text, textColor, textPos, imagePos, imageScale, userImage
+            };
+
+            const data = await saveDesign(product.id || 1, config);
+
+            setDesignId(data.designId);
+            setShowQR(true);
+
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: [color, '#ffffff']
+            });
+        } catch (error) {
+            console.error("Save failed:", error);
+            alert("Failed to save to database. Is the backend running?");
+        } finally {
+            setIsSaving(false);
+        }
     };
 
-    const handleAddToCart = () => {
-        onAddToCart({
-            id: Date.now(),
-            name: `Custom ${product.category} (${text || 'No Text'})`,
-            price: product.price || '₹299 - ₹699',
-            image: product.image,
-            details: {
-                color, text, textColor, category: product.category,
-                userImage, textPos, imagePos, imageScale
-            }
-        });
+    const handleAddToCart = async () => {
+        setIsSaving(true);
+        try {
+            const config = {
+                color, text, textColor, textPos, imagePos, imageScale, userImage
+            };
 
-        confetti({
-            particleCount: 50,
-            velocity: 30,
-            spread: 360,
-            origin: { x: 0.9, y: 0.1 }
-        });
+            // 1. Store the design in DB first
+            const data = await saveDesign(product.id || 1, config);
+
+            // 2. Add to cart with DB reference
+            onAddToCart({
+                id: Date.now(),
+                designId: data.id,
+                slug: data.designId,
+                name: `Custom ${product.category}`,
+                price: product.price || '₹499',
+                image: product.image,
+                details: { color, text, category: product.category }
+            });
+
+            confetti({
+                particleCount: 50,
+                velocity: 30,
+                spread: 360,
+                origin: { x: 0.9, y: 0.1 }
+            });
+        } catch (error) {
+            console.error("Cart error:", error);
+            alert("Could not store design in database.");
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     return (
@@ -133,7 +164,7 @@ const Customizer = ({ onAddToCart, initialProduct }) => {
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
                     <button
-                        onClick={() => window.history.back()}
+                        onClick={onExit}
                         style={{
                             background: 'transparent',
                             border: 'none',
@@ -158,11 +189,25 @@ const Customizer = ({ onAddToCart, initialProduct }) => {
                 </div>
 
                 <div style={{ display: 'flex', gap: '1rem' }}>
-                    <button onClick={handleSave} className="glass" style={{ padding: '0.6rem 1.2rem', borderRadius: '10px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <Share2 size={16} /> Share
+                    <button
+                        onClick={handleSave}
+                        disabled={isSaving}
+                        className="glass"
+                        style={{
+                            padding: '0.6rem 1.2rem',
+                            borderRadius: '10px',
+                            fontSize: '0.85rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            opacity: isSaving ? 0.5 : 1
+                        }}
+                    >
+                        <Share2 size={16} /> {isSaving ? 'Sharing...' : 'Share Design'}
                     </button>
                     <button
                         onClick={handleAddToCart}
+                        disabled={isSaving}
                         style={{
                             background: 'var(--primary)',
                             color: '#fff',
@@ -175,10 +220,11 @@ const Customizer = ({ onAddToCart, initialProduct }) => {
                             boxShadow: '0 8px 20px var(--primary-glow)',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '0.5rem'
+                            gap: '0.6rem',
+                            opacity: isSaving ? 0.7 : 1
                         }}
                     >
-                        <ShoppingBag size={16} /> Add to Collection
+                        <ShoppingBag size={18} /> {isSaving ? 'Storing...' : 'Save & Add to Cart'}
                     </button>
                 </div>
             </nav>
@@ -194,6 +240,7 @@ const Customizer = ({ onAddToCart, initialProduct }) => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
+                        paddingTop: '80px',
                         background: 'radial-gradient(circle at center, #1a1a20 0%, #0a0a0c 100%)',
                         cursor: isDragging ? 'grabbing' : 'auto',
                         minHeight: '400px'
@@ -522,9 +569,39 @@ const Customizer = ({ onAddToCart, initialProduct }) => {
                             </section>
                         </div>
                     </div>
+
+                    {/* Action Footer */}
+                    <div style={{ padding: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.05)', background: '#0f0f12' }}>
+                        <button
+                            onClick={handleAddToCart}
+                            disabled={isSaving}
+                            style={{
+                                width: '100%',
+                                background: 'var(--primary)',
+                                color: '#fff',
+                                border: 'none',
+                                padding: '1rem',
+                                borderRadius: '12px',
+                                fontWeight: '700',
+                                fontSize: '1rem',
+                                cursor: 'pointer',
+                                boxShadow: '0 8px 20px var(--primary-glow)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '0.6rem',
+                                opacity: isSaving ? 0.7 : 1,
+                                transition: 'all 0.3s'
+                            }}
+                            onMouseEnter={(e) => !isSaving && (e.currentTarget.style.transform = 'translateY(-2px)')}
+                            onMouseLeave={(e) => !isSaving && (e.currentTarget.style.transform = 'translateY(0)')}
+                        >
+                            <ShoppingBag size={20} /> {isSaving ? 'Saving...' : 'Save & Add to Cart'}
+                        </button>
+                    </div>
                 </aside>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 
