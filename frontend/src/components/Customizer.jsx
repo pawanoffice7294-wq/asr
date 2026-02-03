@@ -111,254 +111,291 @@ const Customizer = ({ onAddToCart, initialProduct }) => {
     };
 
     return (
-        <div className="customizer-layout" style={{ padding: '6rem 2rem 8rem', display: 'grid', gridTemplateColumns: '1fr 400px', gap: '3rem', maxWidth: '1400px', margin: '0 auto', minHeight: '100vh' }}>
-            {/* Immersive Preview Area */}
-            <div
-                className="glass-card preview-area"
-                style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'radial-gradient(circle at 50% 50%, #1e293b 0%, #020617 100%)', overflow: 'hidden', cursor: isDragging ? 'grabbing' : 'auto' }}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseUp}
-            >
+        <div className="customizer-layout" style={{
+            padding: '1rem 2rem 5rem',
+            maxWidth: '100vw',
+            margin: '0 auto',
+            minHeight: '100vh',
+            display: 'flex',
+            flexDirection: 'column',
+            background: 'var(--background)'
+        }}>
+            {/* 1. Top Navigation: Absolutely isolated at the top left */}
+            <div style={{ position: 'absolute', top: '2rem', left: '2rem', zIndex: 1000 }}>
                 <button
                     className="glass"
                     onClick={() => window.history.back()}
                     style={{
-                        position: 'absolute',
-                        top: '1.5rem',
-                        left: '1.5rem',
-                        padding: '0.6rem 1.2rem',
+                        padding: '0.8rem 1.5rem',
                         borderRadius: '12px',
-                        zIndex: 100,
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '0.5rem',
-                        fontSize: '0.8rem',
+                        gap: '0.6rem',
+                        fontSize: '0.9rem',
                         fontWeight: '700',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+                        boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
                     }}
                 >
-                    <ArrowRight size={16} style={{ transform: 'rotate(180deg)' }} /> Back
+                    <ArrowRight size={18} style={{ transform: 'rotate(180deg)' }} /> Back to Shop
                 </button>
+            </div>
 
+            {/* 2. Main Studio - Using a balanced grid to keep the center Column perfectly centered on the page */}
+            <main style={{
+                display: 'grid',
+                gridTemplateColumns: 'minmax(420px, 1fr) minmax(auto, 600px) minmax(420px, 1fr)',
+                gap: '2rem',
+                flex: 1,
+                alignItems: 'center',
+                paddingTop: '5rem'
+            }}>
+                {/* Left Spacer - Keeps the middle balanced */}
+                <div className="desktop-only"></div>
+
+                {/* Center Column: The T-Shirt Container - ONLY T-SHIRT HERE */}
                 <div
-                    className="product-canvas"
+                    className="glass-card"
                     style={{
-                        width: 'min(450px, 80vw)',
-                        height: 'min(450px, 80vw)',
-                        backgroundColor: color,
-                        clipPath: shapes[product.category] || shapes['T-Shirt'],
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        transition: isDragging ? 'none' : 'background-color 0.6s cubic-bezier(0.23, 1, 0.32, 1)',
-                        boxShadow: '0 30px 60px rgba(0,0,0,0.4), inset 0 0 40px rgba(0,0,0,0.2)',
-                        transform: `perspective(1000px) rotateY(${product.category === 'Mug' ? '-10deg' : '-5deg'})`,
-                        position: 'relative',
-                        marginTop: '2rem' // Give space for the back button on smaller screens
+                        background: 'radial-gradient(circle at 50% 50%, rgba(30, 41, 59, 0.5) 0%, rgba(2, 6, 23, 0.8) 100%)',
+                        overflow: 'hidden',
+                        cursor: isDragging ? 'grabbing' : 'auto',
+                        borderRadius: '40px',
+                        aspectRatio: '1/1',
+                        width: '100%',
+                        boxShadow: '0 30px 100px rgba(0,0,0,0.7)',
+                        border: '1px solid rgba(255,255,255,0.05)',
+                        position: 'relative'
                     }}
+                    onMouseMove={handleMouseMove}
+                    onMouseUp={handleMouseUp}
+                    onMouseLeave={handleMouseUp}
                 >
-                    {/* Text Overlay */}
                     <div
-                        onMouseDown={(e) => handleMouseDown(e, 'text')}
+                        className="product-canvas"
                         style={{
-                            position: 'absolute',
-                            left: `${textPos.x}%`,
-                            top: `${textPos.y}%`,
-                            transform: 'translate(-50%, -50%)',
-                            cursor: 'grab',
-                            userSelect: 'none',
-                            border: activeLayer === 'text' ? '1px dashed rgba(255,255,255,0.4)' : 'none',
-                            padding: '10px',
-                            zIndex: 5
-                        }}
-                    >
-                        <span style={{
-                            color: textColor,
-                            fontSize: '2rem',
-                            fontWeight: '900',
-                            textTransform: 'uppercase',
-                            textAlign: 'center',
-                            maxWidth: '250px',
-                            wordBreak: 'break-word',
-                            textShadow: '0 4px 12px rgba(0,0,0,0.5)',
-                            pointerEvents: 'none'
-                        }}>
-                            {text}
-                        </span>
-                    </div>
-
-                    {/* Image Overlay */}
-                    {userImage && (
-                        <div
-                            onMouseDown={(e) => handleMouseDown(e, 'image')}
-                            style={{
-                                position: 'absolute',
-                                left: `${imagePos.x}%`,
-                                top: `${imagePos.y}%`,
-                                transform: `translate(-50%, -50%) scale(${imageScale})`,
-                                cursor: 'grab',
-                                userSelect: 'none',
-                                border: activeLayer === 'image' ? '1px dashed rgba(255,255,255,0.4)' : 'none',
-                                width: '150px',
-                                height: '150px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                zIndex: 4
-                            }}
-                        >
-                            <img src={userImage} alt="userupload" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', pointerEvents: 'none' }} />
-                        </div>
-                    )}
-                </div>
-
-                {showQR && (
-                    <div className="glass-heavy" style={{ position: 'absolute', bottom: '2rem', right: '2rem', padding: '1.2rem', borderRadius: '24px', textAlign: 'center', animation: 'fadeIn 0.5s ease', border: '1px solid var(--primary)' }}>
-                        <p style={{ fontSize: '0.7rem', marginBottom: '0.8rem', opacity: 0.6, fontWeight: '800', letterSpacing: '1px' }}>SHARE DESIGN</p>
-                        <div style={{ background: 'white', padding: '0.5rem', borderRadius: '12px' }}>
-                            <QRCode value={`${siteUrl}?design=${designId}`} size={100} />
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            {/* Studio Controls */}
-            <div className="glass-card" style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', gap: '2rem', overflowY: 'auto' }}>
-                <div>
-                    <h2 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '0.5rem' }}>Personal <span className="gradient-text">Studio</span></h2>
-                    <p style={{ fontSize: '0.8rem', opacity: 0.5 }}>Customize {product.category} • Drag to Position</p>
-                </div>
-
-                {/* Layer Tabs */}
-                <div style={{ display: 'flex', gap: '0.5rem', background: 'var(--glass)', padding: '0.4rem', borderRadius: '12px' }}>
-                    <button
-                        onClick={() => setActiveLayer('text')}
-                        style={{ flex: 1, padding: '0.6rem', borderRadius: '8px', background: activeLayer === 'text' ? 'var(--primary)' : 'transparent', color: activeLayer === 'text' ? 'white' : 'var(--text-muted)', fontSize: '0.85rem' }}
-                    >
-                        Text
-                    </button>
-                    <button
-                        onClick={() => setActiveLayer('image')}
-                        style={{ flex: 1, padding: '0.6rem', borderRadius: '8px', background: activeLayer === 'image' ? 'var(--primary)' : 'transparent', color: activeLayer === 'image' ? 'white' : 'var(--text-muted)', fontSize: '0.85rem' }}
-                    >
-                        Logo
-                    </button>
-                </div>
-
-                {activeLayer === 'text' ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', animation: 'fadeIn 0.3s ease' }}>
-                        <div>
-                            <label style={{ display: 'block', marginBottom: '0.8rem', fontWeight: '700', fontSize: '0.75rem', textTransform: 'uppercase', opacity: 0.6 }}>Edit Text</label>
-                            <input
-                                type="text"
-                                value={text}
-                                onChange={(e) => setText(e.target.value.toUpperCase())}
-                                className="glass"
-                                style={{ width: '100%', padding: '1rem', color: 'white', borderRadius: '12px' }}
-                            />
-                        </div>
-                        <div>
-                            <label style={{ display: 'block', marginBottom: '0.8rem', fontWeight: '700', fontSize: '0.75rem', textTransform: 'uppercase', opacity: 0.6 }}>Typography</label>
-                            <div style={{ display: 'flex', gap: '0.6rem' }}>
-                                {['#ffffff', '#000000', '#ff2d55', '#ffcc00'].map(c => (
-                                    <button key={c} onClick={() => setTextColor(c)} style={{ width: '30px', height: '30px', backgroundColor: c, borderRadius: '50%', border: textColor === c ? '2px solid var(--primary)' : '1px solid var(--glass-border)' }} />
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', animation: 'fadeIn 0.3s ease' }}>
-                        <div>
-                            <label style={{ display: 'block', marginBottom: '0.8rem', fontWeight: '700', fontSize: '0.75rem', textTransform: 'uppercase', opacity: 0.6 }}>Upload Artwork</label>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
-                                <label className="glass" style={{ padding: '1rem', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-                                    <Upload size={18} />
-                                    <span style={{ fontSize: '0.7rem' }}>Local File</span>
-                                    <input type="file" hidden onChange={handleFileUpload} accept="image/*" />
-                                </label>
-                                <button onClick={handleUrlUpload} className="glass" style={{ padding: '1rem', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-                                    <Plus size={18} />
-                                    <span style={{ fontSize: '0.7rem' }}>Image URL</span>
-                                </button>
-                            </div>
-                        </div>
-                        {userImage && (
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '0.8rem', fontWeight: '700', fontSize: '0.75rem', textTransform: 'uppercase', opacity: 0.6 }}>Scale Size</label>
-                                <input
-                                    type="range" min="0.5" max="2" step="0.1" value={imageScale}
-                                    onChange={(e) => setImageScale(parseFloat(e.target.value))}
-                                    style={{ width: '100%', accentColor: 'var(--primary)' }}
-                                />
-                            </div>
-                        )}
-                    </div>
-                )}
-
-                <div>
-                    <label style={{ display: 'block', marginBottom: '0.8rem', fontWeight: '700', fontSize: '0.75rem', textTransform: 'uppercase', opacity: 0.6 }}>Base Color</label>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.6rem' }}>
-                        {colors.map(c => (
-                            <button key={c} onClick={() => setColor(c)} style={{ height: '35px', backgroundColor: c, borderRadius: '8px', border: color === c ? '2px solid var(--primary)' : '1px solid transparent' }} />
-                        ))}
-                    </div>
-                </div>
-
-                <div style={{ background: 'var(--glass)', padding: '1.2rem', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    <label style={{ display: 'block', fontWeight: '700', fontSize: '0.75rem', textTransform: 'uppercase', opacity: 0.6 }}>Alignment & Tools</label>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
-                        <button onClick={() => {
-                            if (activeLayer === 'text') setTextPos(p => ({ ...p, y: 20 }));
-                            else setImagePos(p => ({ ...p, y: 30 }));
-                        }} className="glass" style={{ padding: '0.6rem', borderRadius: '8px', fontSize: '0.75rem' }}>Top</button>
-                        <button onClick={() => {
-                            if (activeLayer === 'text') setTextPos({ x: 50, y: 40 });
-                            else setImagePos({ x: 50, y: 50 });
-                        }} className="glass" style={{ padding: '0.6rem', borderRadius: '8px', fontSize: '0.75rem', border: '1px solid var(--primary)' }}>Center</button>
-                        <button onClick={() => {
-                            if (activeLayer === 'text') setTextPos(p => ({ ...p, y: 70 }));
-                            else setImagePos(p => ({ ...p, y: 80 }));
-                        }} className="glass" style={{ padding: '0.6rem', borderRadius: '8px', fontSize: '0.75rem' }}>Bottom</button>
-                        <button onClick={() => {
-                            if (activeLayer === 'text') setTextPos(p => ({ ...p, x: 30 }));
-                            else setImagePos(p => ({ ...p, x: 30 }));
-                        }} className="glass" style={{ padding: '0.6rem', borderRadius: '8px', fontSize: '0.75rem' }}>Left</button>
-                        <button onClick={() => {
-                            if (activeLayer === 'text') setTextPos(p => ({ ...p, y: 50 }));
-                            else setImagePos(p => ({ ...p, y: 50 }));
-                        }} className="glass" style={{ padding: '0.6rem', borderRadius: '8px', fontSize: '0.75rem' }}>Mid</button>
-                        <button onClick={() => {
-                            if (activeLayer === 'text') setTextPos(p => ({ ...p, x: 70 }));
-                            else setImagePos(p => ({ ...p, x: 70 }));
-                        }} className="glass" style={{ padding: '0.6rem', borderRadius: '8px', fontSize: '0.75rem' }}>Right</button>
-                    </div>
-                </div>
-
-                <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                    <div style={{ display: 'flex', gap: '0.8rem' }}>
-                        <button onClick={handleSave} className="glass" style={{ flex: 1, padding: '0.8rem', borderRadius: '12px', fontSize: '0.8rem', fontWeight: '700' }}>Share Session</button>
-                    </div>
-                    <button
-                        onClick={handleAddToCart}
-                        style={{
-                            padding: '1.2rem',
-                            background: 'var(--primary)',
-                            color: 'white',
+                            width: '85%',
+                            height: '85%',
+                            backgroundColor: color,
+                            clipPath: shapes[product.category] || shapes['T-Shirt'],
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            gap: '0.8rem',
-                            borderRadius: '16px',
-                            fontWeight: '800',
-                            fontSize: '1rem',
-                            boxShadow: '0 10px 30px var(--primary-glow)'
+                            transition: isDragging ? 'none' : 'background-color 0.6s cubic-bezier(0.23, 1, 0.32, 1)',
+                            boxShadow: '0 40px 80px rgba(0,0,0,0.6), inset 0 0 60px rgba(0,0,0,0.3)',
+                            transform: `perspective(1000px) rotateY(${product.category === 'Mug' ? '-10deg' : '-5deg'})`,
+                            position: 'relative'
                         }}
                     >
-                        <ShoppingBag size={20} /> Add to Collection
-                    </button>
+                        {/* Text Overlay */}
+                        <div
+                            onMouseDown={(e) => handleMouseDown(e, 'text')}
+                            style={{
+                                position: 'absolute',
+                                left: `${textPos.x}%`,
+                                top: `${textPos.y}%`,
+                                transform: 'translate(-50%, -50%)',
+                                cursor: 'grab',
+                                userSelect: 'none',
+                                border: activeLayer === 'text' ? '1px dashed rgba(255,255,255,0.6)' : 'none',
+                                padding: '10px',
+                                zIndex: 5
+                            }}
+                        >
+                            <span style={{
+                                color: textColor,
+                                fontSize: '2.2rem',
+                                fontWeight: '900',
+                                textTransform: 'uppercase',
+                                textAlign: 'center',
+                                maxWidth: '280px',
+                                wordBreak: 'break-word',
+                                textShadow: '0 4px 12px rgba(0,0,0,0.5)',
+                                pointerEvents: 'none',
+                                letterSpacing: '1px'
+                            }}>
+                                {text}
+                            </span>
+                        </div>
+
+                        {/* Image Overlay */}
+                        {userImage && (
+                            <div
+                                onMouseDown={(e) => handleMouseDown(e, 'image')}
+                                style={{
+                                    position: 'absolute',
+                                    left: `${imagePos.x}%`,
+                                    top: `${imagePos.y}%`,
+                                    transform: `translate(-50%, -50%) scale(${imageScale})`,
+                                    cursor: 'grab',
+                                    userSelect: 'none',
+                                    border: activeLayer === 'image' ? '1px dashed rgba(255,255,255,0.6)' : 'none',
+                                    width: '180px',
+                                    height: '180px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    zIndex: 4
+                                }}
+                            >
+                                <img src={userImage} alt="userupload" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', pointerEvents: 'none' }} />
+                            </div>
+                        )}
+                    </div>
                 </div>
-            </div>
+
+                {/* Right Column: Studio Controls Side Panel */}
+                <aside className="glass-card" style={{
+                    padding: '2rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '1.5rem',
+                    maxHeight: '90vh',
+                    overflowY: 'auto',
+                    borderRadius: '32px',
+                    width: '400px'
+                }}>
+                    <div>
+                        <h2 style={{ fontSize: '1.6rem', fontWeight: '800', marginBottom: '0.5rem' }}>Personal <span className="gradient-text">Studio</span></h2>
+                        <p style={{ fontSize: '0.8rem', opacity: 0.5 }}>Customize {product.category}</p>
+                    </div>
+
+                    {/* Layer Tabs */}
+                    <div style={{ display: 'flex', gap: '0.5rem', background: 'var(--glass)', padding: '0.4rem', borderRadius: '12px' }}>
+                        <button
+                            onClick={() => setActiveLayer('text')}
+                            style={{ flex: 1, padding: '0.6rem', borderRadius: '8px', background: activeLayer === 'text' ? 'var(--primary)' : 'transparent', color: activeLayer === 'text' ? 'white' : 'var(--text-muted)', fontSize: '0.8rem' }}
+                        >
+                            Text
+                        </button>
+                        <button
+                            onClick={() => setActiveLayer('image')}
+                            style={{ flex: 1, padding: '0.6rem', borderRadius: '8px', background: activeLayer === 'image' ? 'var(--primary)' : 'transparent', color: activeLayer === 'image' ? 'white' : 'var(--text-muted)', fontSize: '0.8rem' }}
+                        >
+                            Logo
+                        </button>
+                    </div>
+
+                    {activeLayer === 'text' ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', animation: 'fadeIn 0.3s ease' }}>
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '0.6rem', fontWeight: '700', fontSize: '0.7rem', textTransform: 'uppercase', opacity: 0.6 }}>Edit Text</label>
+                                <input
+                                    type="text"
+                                    value={text}
+                                    onChange={(e) => setText(e.target.value.toUpperCase())}
+                                    className="glass"
+                                    style={{ width: '100%', padding: '0.8rem', color: 'white', borderRadius: '12px', border: '1px solid var(--glass-border)' }}
+                                />
+                            </div>
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '0.6rem', fontWeight: '700', fontSize: '0.7rem', textTransform: 'uppercase', opacity: 0.6 }}>Typography</label>
+                                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                    {['#ffffff', '#000000', '#ff2d55', '#ffcc00'].map(c => (
+                                        <button key={c} onClick={() => setTextColor(c)} style={{ width: '28px', height: '28px', backgroundColor: c, borderRadius: '50%', border: textColor === c ? '2px solid var(--primary)' : '1px solid var(--glass-border)' }} />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', animation: 'fadeIn 0.3s ease' }}>
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '0.6rem', fontWeight: '700', fontSize: '0.7rem', textTransform: 'uppercase', opacity: 0.6 }}>Upload Artwork</label>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
+                                    <label className="glass" style={{ padding: '0.8rem', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
+                                        <Upload size={16} />
+                                        <span style={{ fontSize: '0.65rem' }}>Local File</span>
+                                        <input type="file" hidden onChange={handleFileUpload} accept="image/*" />
+                                    </label>
+                                    <button onClick={handleUrlUpload} className="glass" style={{ padding: '0.8rem', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}>
+                                        <Plus size={16} />
+                                        <span style={{ fontSize: '0.65rem' }}>Image URL</span>
+                                    </button>
+                                </div>
+                            </div>
+                            {userImage && (
+                                <div>
+                                    <label style={{ display: 'block', marginBottom: '0.6rem', fontWeight: '700', fontSize: '0.7rem', textTransform: 'uppercase', opacity: 0.6 }}>Scale Size</label>
+                                    <input
+                                        type="range" min="0.5" max="2" step="0.1" value={imageScale}
+                                        onChange={(e) => setImageScale(parseFloat(e.target.value))}
+                                        style={{ width: '100%', accentColor: 'var(--primary)' }}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '0.6rem', fontWeight: '700', fontSize: '0.7rem', textTransform: 'uppercase', opacity: 0.6 }}>Base Color</label>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem' }}>
+                            {colors.map(c => (
+                                <button key={c} onClick={() => setColor(c)} style={{ height: '30px', backgroundColor: c, borderRadius: '8px', border: color === c ? '2px solid var(--primary)' : '1px solid transparent' }} />
+                            ))}
+                        </div>
+                    </div>
+
+                    <div style={{ background: 'var(--glass)', padding: '1rem', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                        <label style={{ display: 'block', fontWeight: '700', fontSize: '0.7rem', textTransform: 'uppercase', opacity: 0.6 }}>Alignment Tools</label>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.4rem' }}>
+                            {['Top', 'Center', 'Bottom', 'Left', 'Mid', 'Right'].map(tool => (
+                                <button key={tool} onClick={() => {
+                                    const yMap = { Top: 25, Center: 50, Bottom: 75, Mid: 50 };
+                                    const xMap = { Left: 25, Mid: 50, Right: 75, Center: 50 };
+                                    if (activeLayer === 'text') {
+                                        setTextPos(p => ({
+                                            x: xMap[tool] !== undefined ? xMap[tool] : p.x,
+                                            y: yMap[tool] !== undefined ? yMap[tool] : p.y
+                                        }));
+                                    } else {
+                                        setImagePos(p => ({
+                                            x: xMap[tool] !== undefined ? xMap[tool] : p.x,
+                                            y: yMap[tool] !== undefined ? yMap[tool] : p.y
+                                        }));
+                                    }
+                                }} className="glass" style={{ padding: '0.5rem', borderRadius: '8px', fontSize: '0.7rem' }}>{tool}</button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                        <button onClick={handleSave} className="glass" style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', fontSize: '0.85rem', fontWeight: '700', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                            <Share2 size={16} /> Share Link
+                        </button>
+                        <button
+                            onClick={handleAddToCart}
+                            style={{
+                                width: '100%',
+                                padding: '1rem',
+                                background: 'var(--primary)',
+                                color: 'white',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '0.6rem',
+                                borderRadius: '16px',
+                                fontWeight: '800',
+                                fontSize: '0.95rem',
+                                boxShadow: '0 10px 30px var(--primary-glow)'
+                            }}
+                        >
+                            <ShoppingBag size={18} /> Add to Bag
+                        </button>
+                    </div>
+                </aside>
+
+                {/* Secondary QR Overlay - Fixed to screen, not inside t-shirt container */}
+                {showQR && (
+                    <div className="glass-heavy" style={{ position: 'fixed', bottom: '2rem', right: '2rem', padding: '1.2rem', borderRadius: '24px', textAlign: 'center', animation: 'fadeIn 0.5s ease', border: '1px solid var(--primary)', zIndex: 1000 }}>
+                        <p style={{ fontSize: '0.7rem', marginBottom: '0.8rem', opacity: 0.6, fontWeight: '800', letterSpacing: '1px' }}>SCAN TO SHARE</p>
+                        <div style={{ background: 'white', padding: '0.5rem', borderRadius: '12px' }}>
+                            <QRCode value={`${siteUrl}?design=${designId}`} size={120} />
+                        </div>
+                    </div>
+                )}
+            </main>
         </div>
     );
 };
